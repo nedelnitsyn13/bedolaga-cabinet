@@ -188,17 +188,15 @@ export function SwitchTariffSheet({
                   <span className="font-medium text-dark-100">
                     {t('subscription.switchTariff.upgradeCost')}
                   </span>
-                  {switchPreview.discount_percent && switchPreview.discount_percent > 0 && (
+                  {(switchPreview.discount_percent ?? 0) > 0 && (
                     <span className="ml-2 inline-block rounded-full bg-success-500/20 px-2 py-0.5 text-xs font-medium text-success-400">
                       -{switchPreview.discount_percent}%
                     </span>
                   )}
                 </div>
                 <div className="text-right">
-                  {switchPreview.discount_percent &&
-                    switchPreview.discount_percent > 0 &&
-                    switchPreview.base_upgrade_cost_kopeks &&
-                    switchPreview.base_upgrade_cost_kopeks > 0 && (
+                  {(switchPreview.discount_percent ?? 0) > 0 &&
+                    switchPreview.base_upgrade_cost_kopeks && (
                       <span className="mr-2 text-sm text-dark-500 line-through">
                         {formatPrice(switchPreview.base_upgrade_cost_kopeks)}
                       </span>

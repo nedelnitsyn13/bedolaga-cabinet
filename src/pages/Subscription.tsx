@@ -241,6 +241,7 @@ export default function Subscription() {
 
   // Traffic refresh state
   const [trafficRefreshCooldown, setTrafficRefreshCooldown] = useState(0);
+  const [limitedTrafficRefreshCooldown, setLimitedTrafficRefreshCooldown] = useState(0);
 
   // Revoke (reissue) cooldown state
   const [revokeCooldown, setRevokeCooldown] = useState(0);
@@ -594,6 +595,7 @@ export default function Subscription() {
 
   // Track if we've already triggered auto-refresh this session
   const hasAutoRefreshed = useRef(false);
+  const hasAutoRefreshedLimited = useRef(false);
 
   // Cooldown timer for traffic refresh
   useEffect(() => {
@@ -603,6 +605,62 @@ export default function Subscription() {
     }, 1000);
     return () => clearInterval(timer);
   }, [trafficRefreshCooldown]);
+
+  // limited_companion_traffic_used_gb is only written by a purchase's resync
+  // or the periodic monitoring pass on the backend, so it can otherwise sit
+  // stale (often 0) for a long time — refresh from the panel on mount/click,
+  // mirroring the main traffic refresh above.
+  const refreshLimitedTrafficMutation = useMutation({
+    mutationFn: () => subscriptionApi.refreshLimitedTraffic(subscriptionId),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['limited-traffic', subscriptionId], data);
+      safeLocal.setItem(
+        `limited_traffic_refresh_ts_${subscriptionId ?? 'default'}`,
+        Date.now().toString(),
+      );
+      setLimitedTrafficRefreshCooldown(30);
+    },
+    onError: (error: {
+      response?: { status?: number; headers?: { get?: (key: string) => string } };
+    }) => {
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.headers?.get?.('Retry-After');
+        setLimitedTrafficRefreshCooldown(retryAfter ? parseInt(retryAfter, 10) : 30);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (limitedTrafficRefreshCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setLimitedTrafficRefreshCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [limitedTrafficRefreshCooldown]);
+
+  // Auto-refresh limited-companion traffic on mount (with 30s caching)
+  useEffect(() => {
+    if (!limitedTraffic?.available) return;
+    if (hasAutoRefreshedLimited.current) return;
+    hasAutoRefreshedLimited.current = true;
+
+    const lastRefresh = safeLocal.getItem(
+      `limited_traffic_refresh_ts_${subscriptionId ?? 'default'}`,
+    );
+    const now = Date.now();
+    const cacheMs = 30 * 1000;
+
+    if (lastRefresh && now - parseInt(lastRefresh, 10) < cacheMs) {
+      const elapsed = now - parseInt(lastRefresh, 10);
+      const remaining = Math.ceil((cacheMs - elapsed) / 1000);
+      if (remaining > 0) {
+        setLimitedTrafficRefreshCooldown(remaining);
+      }
+      return;
+    }
+
+    refreshLimitedTrafficMutation.mutate();
+  }, [limitedTraffic?.available, refreshLimitedTrafficMutation, subscriptionId]);
 
   // Initialize revoke cooldown from localStorage on mount
   useEffect(() => {
@@ -999,9 +1057,27 @@ export default function Subscription() {
                     <span className="text-[11px] font-medium uppercase tracking-wider text-dark-400">
                       {t('subscription.limitedServerTraffic')}
                     </span>
-                    <span className="font-mono text-[11px] text-dark-400">
-                      {`${formatTraffic(limitedTraffic.used_gb)} / ${formatTraffic(limitedTraffic.total_limit_gb)}`}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-[11px] text-dark-400">
+                        {`${formatTraffic(limitedTraffic.used_gb)} / ${formatTraffic(limitedTraffic.total_limit_gb)}`}
+                      </span>
+                      <button
+                        onClick={() => refreshLimitedTrafficMutation.mutate()}
+                        disabled={
+                          refreshLimitedTrafficMutation.isPending ||
+                          limitedTrafficRefreshCooldown > 0
+                        }
+                        className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium text-dark-400 transition-colors hover:bg-dark-50/[0.05] hover:text-dark-50/50 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <RefreshIcon
+                          className="h-3 w-3"
+                          spinning={refreshLimitedTrafficMutation.isPending}
+                        />
+                        {limitedTrafficRefreshCooldown > 0
+                          ? `${limitedTrafficRefreshCooldown}s`
+                          : t('common.refresh')}
+                      </button>
+                    </div>
                   </div>
                   <div className="mb-2 text-[10px] text-dark-400">
                     {t('subscription.trafficReset.MONTH_ROLLING')}

@@ -181,6 +181,15 @@ export const subscriptionApi = {
     return response.data;
   },
 
+  refreshLimitedTraffic: async (subscriptionId?: number): Promise<LimitedCompanionTraffic> => {
+    const response = await apiClient.post<LimitedCompanionTraffic>(
+      '/cabinet/subscription/limited-traffic/refresh',
+      {},
+      withSubId(subscriptionId),
+    );
+    return response.data;
+  },
+
   getLimitedTrafficPackages: async (subscriptionId?: number): Promise<TrafficPackage[]> => {
     const response = await apiClient.get<TrafficPackage[]>(
       '/cabinet/subscription/limited-traffic-packages',
