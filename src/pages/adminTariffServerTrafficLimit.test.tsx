@@ -50,6 +50,7 @@ const servers: ServerInfo[] = [
     country_code: 'DE',
     is_selected: false,
     traffic_limit_gb: null,
+    is_limited_companion: true,
   },
 ];
 
@@ -67,7 +68,9 @@ const stored: Partial<TariffDetail> = {
   tier_level: 2,
   period_prices: [{ days: 30, price_kopeks: 29000 }],
   highlight_period_days: null,
-  allowed_squads: ['squad-bs'],
+  // squad-bs (компаньон) сознательно НЕ в allowed_squads — его лимит независим
+  // от выбора серверов тарифа, это и есть проверяемое поведение.
+  allowed_squads: ['squad-osnova'],
   server_traffic_limits: { 'squad-bs': { traffic_limit_gb: 250 } },
   external_squad_uuid: null,
   promo_groups: [],
@@ -176,7 +179,7 @@ async function save(name: string): Promise<Record<string, unknown>> {
   return created[0];
 }
 
-it('поле лимита появляется только у выбранного сервера', async () => {
+it('поле лимита у обычного сервера появляется только когда он выбран', async () => {
   renderCreatePage();
   fireEvent.click(screen.getByText(resolveRu('admin.tariffs.periodTariff') as string));
   await addPeriod('30');
@@ -188,16 +191,40 @@ it('поле лимита появляется только у выбранно�
   expect(limitInput('osnova')).not.toBeNull();
 });
 
-it('введённый лимит уходит в server_traffic_limits при создании', async () => {
+it('поле лимита у сервера-компаньона видно всегда, без выбора', async () => {
   renderCreatePage();
   fireEvent.click(screen.getByText(resolveRu('admin.tariffs.periodTariff') as string));
   await addPeriod('30');
   await openServersTab();
+
+  // BS — компаньон (is_limited_companion), его инпут не зависит от allowed_squads.
+  expect(limitInput('BS')).not.toBeNull();
+  await screen.findByText(resolveRu('admin.tariffs.companionServerHint') as string);
+});
+
+it('выбор сервера-компаньона показывает предупреждение вместо обычной подсказки', async () => {
+  renderCreatePage();
+  fireEvent.click(screen.getByText(resolveRu('admin.tariffs.periodTariff') as string));
+  await addPeriod('30');
+  await openServersTab();
+
   fireEvent.click(screen.getByText('BS'));
+
+  await screen.findByText(resolveRu('admin.tariffs.companionServerSelectedWarning') as string);
+  expect(screen.queryByText(resolveRu('admin.tariffs.companionServerHint') as string)).toBeNull();
+});
+
+it('введённый лимит компаньона уходит в server_traffic_limits без выбора сервера', async () => {
+  renderCreatePage();
+  fireEvent.click(screen.getByText(resolveRu('admin.tariffs.periodTariff') as string));
+  await addPeriod('30');
+  await openServersTab();
+  // Не кликаем по BS — компаньон не должен становиться allowed_squad.
   fireEvent.change(limitInput('BS') as HTMLInputElement, { target: { value: '250' } });
 
   const payload = await save('Премиум');
 
+  expect(payload.allowed_squads).toEqual([]);
   expect(payload.server_traffic_limits).toEqual({ 'squad-bs': { traffic_limit_gb: 250 } });
 });
 
@@ -214,14 +241,18 @@ it('пустой лимит — сервер выбран, но override не у
   expect(payload.server_traffic_limits).toEqual({});
 });
 
-it('на правке лимит подтягивается из server_traffic_limits тарифа', async () => {
+it('на правке лимит компаньона подтягивается из server_traffic_limits, хотя сервер не выбран', async () => {
   renderEditPage();
   await openServersTab();
 
   expect((limitInput('BS') as HTMLInputElement).value).toBe('250');
+  // squad-osnova — единственный allowed_squad в stored, BS в нём нет.
+  const osnovaLabel = screen.getByText('osnova');
+  const osnovaRow = osnovaLabel.closest('button')!.parentElement as HTMLElement;
+  expect(osnovaRow.className).toContain('bg-accent-500/20');
 });
 
-it('на правке сохранение без изменений везёт сохранённый лимит', async () => {
+it('на правке сохранение без изменений везёт сохранённый лимит компаньона', async () => {
   renderEditPage();
   await openServersTab();
 
@@ -229,5 +260,6 @@ it('на правке сохранение без изменений везёт 
   fireEvent.click(screen.getByText(resolveRu('admin.tariffs.saveButton') as string));
 
   await waitFor(() => expect(updated.length).toBe(1));
+  expect(updated[0].allowed_squads).toEqual(['squad-osnova']);
   expect(updated[0].server_traffic_limits).toEqual({ 'squad-bs': { traffic_limit_gb: 250 } });
 });

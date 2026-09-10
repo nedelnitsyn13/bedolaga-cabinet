@@ -2616,6 +2616,8 @@
       "serverTrafficLimitPlaceholder": "套餐默认",
       "serverTrafficLimitHint": "此服务器的自定义流量限制。留空 — 使用套餐的总体限制。",
       "serverTrafficLimitUnit": "GB",
+      "companionServerHint": "限量伴生服务器 — 其限额独立于上方选择设置，无需勾选它。",
+      "companionServerSelectedWarning": "⚠️ 这是限量伴生服务器 — 请勿在此勾选，否则主账户将绕过其自身的伴生限额，直接获得无限访问权限。",
       "noServersAvailable": "没有可用的服务器",
       "promoGroupsTitle": "促销组",
       "promoGroupsHint": "选择可以访问此套餐的促销组。如果未选择任何组，则所有人都可以访问。",

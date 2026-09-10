@@ -18,6 +18,11 @@ export interface ServerInfo {
   country_code: string | null;
   is_selected: boolean;
   traffic_limit_gb?: number | null;
+  /** Squad лимитного сервера-компаньона (LIMITED_COMPANION_SQUAD_UUID). Его лимит
+   * трафика задаётся независимо от allowed_squads — не выбирайте этот сервер
+   * ниже, иначе основной аккаунт получит к нему прямой безлимитный доступ
+   * в обход отдельного лимитного компаньон-аккаунта. */
+  is_limited_companion?: boolean;
 }
 
 export interface PromoGroupInfo {

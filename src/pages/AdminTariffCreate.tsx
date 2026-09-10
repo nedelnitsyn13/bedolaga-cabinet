@@ -869,62 +869,77 @@ export default function AdminTariffCreate() {
               <div className="space-y-2">
                 {servers.map((server: ServerInfo) => {
                   const isSelected = selectedSquads.includes(server.squad_uuid);
+                  const isCompanion = server.is_limited_companion ?? false;
+                  // Лимит компаньона независим от allowed_squads — задаётся всегда,
+                  // выбирать компаньон-сервер как допустимый для тарифа не нужно.
+                  const showLimitInput = isSelected || isCompanion;
                   return (
-                    <div
-                      key={server.id}
-                      className={`flex w-full items-center gap-3 rounded-lg p-3 transition-colors ${
-                        isSelected
-                          ? isDaily
-                            ? 'bg-warning-500/20 text-warning-300'
-                            : 'bg-accent-500/20 text-accent-300'
-                          : 'bg-dark-800 text-dark-300 hover:bg-dark-700'
-                      }`}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => toggleServer(server.squad_uuid)}
-                        className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                    <div key={server.id}>
+                      <div
+                        className={`flex w-full items-center gap-3 rounded-lg p-3 transition-colors ${
+                          isSelected
+                            ? isDaily
+                              ? 'bg-warning-500/20 text-warning-300'
+                              : 'bg-accent-500/20 text-accent-300'
+                            : 'bg-dark-800 text-dark-300 hover:bg-dark-700'
+                        }`}
                       >
-                        <div
-                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${
-                            isSelected
-                              ? isDaily
-                                ? 'bg-warning-500 text-white'
-                                : 'bg-accent-500 text-on-accent'
-                              : 'bg-dark-600'
-                          }`}
+                        <button
+                          type="button"
+                          onClick={() => toggleServer(server.squad_uuid)}
+                          className="flex min-w-0 flex-1 items-center gap-3 text-left"
                         >
-                          {isSelected && <CheckIcon />}
-                        </div>
-                        <span className="min-w-0 flex-1 truncate text-sm font-medium">
-                          <Twemoji options={{ className: 'twemoji', folder: 'svg', ext: '.svg' }}>
-                            {server.display_name}
-                          </Twemoji>
-                        </span>
-                        {server.country_code && (
-                          <span className="shrink-0 text-xs text-dark-500">
-                            {server.country_code}
+                          <div
+                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${
+                              isSelected
+                                ? isDaily
+                                  ? 'bg-warning-500 text-white'
+                                  : 'bg-accent-500 text-on-accent'
+                                : 'bg-dark-600'
+                            }`}
+                          >
+                            {isSelected && <CheckIcon />}
+                          </div>
+                          <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                            {isCompanion && '🌐 '}
+                            <Twemoji options={{ className: 'twemoji', folder: 'svg', ext: '.svg' }}>
+                              {server.display_name}
+                            </Twemoji>
                           </span>
+                          {server.country_code && (
+                            <span className="shrink-0 text-xs text-dark-500">
+                              {server.country_code}
+                            </span>
+                          )}
+                        </button>
+                        {showLimitInput && (
+                          <div className="flex shrink-0 items-center gap-1.5">
+                            <input
+                              type="number"
+                              value={serverTrafficLimits[server.squad_uuid] ?? ''}
+                              onChange={(e) =>
+                                updateServerTrafficLimit(server.squad_uuid, e.target.value)
+                              }
+                              className="input h-8 w-16 px-2 text-sm"
+                              min={0}
+                              step={1}
+                              placeholder={t('admin.tariffs.serverTrafficLimitPlaceholder')}
+                              title={t('admin.tariffs.serverTrafficLimitHint')}
+                            />
+                            <span className="text-xs text-dark-500">
+                              {t('admin.tariffs.serverTrafficLimitUnit')}
+                            </span>
+                          </div>
                         )}
-                      </button>
-                      {isSelected && (
-                        <div className="flex shrink-0 items-center gap-1.5">
-                          <input
-                            type="number"
-                            value={serverTrafficLimits[server.squad_uuid] ?? ''}
-                            onChange={(e) =>
-                              updateServerTrafficLimit(server.squad_uuid, e.target.value)
-                            }
-                            className="input h-8 w-16 px-2 text-sm"
-                            min={0}
-                            step={1}
-                            placeholder={t('admin.tariffs.serverTrafficLimitPlaceholder')}
-                            title={t('admin.tariffs.serverTrafficLimitHint')}
-                          />
-                          <span className="text-xs text-dark-500">
-                            {t('admin.tariffs.serverTrafficLimitUnit')}
-                          </span>
-                        </div>
+                      </div>
+                      {isCompanion && (
+                        <p
+                          className={`px-3 pt-1 text-xs ${isSelected ? 'text-warning-400' : 'text-dark-500'}`}
+                        >
+                          {isSelected
+                            ? t('admin.tariffs.companionServerSelectedWarning')
+                            : t('admin.tariffs.companionServerHint')}
+                        </p>
                       )}
                     </div>
                   );
