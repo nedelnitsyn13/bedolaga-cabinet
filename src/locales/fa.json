@@ -352,6 +352,7 @@
       "MONTH_ROLLING": "بازنشانی هر ۳۰ روز"
     },
     "traffic": "ترافیک",
+    "limitedServerTraffic": "سرور محدود",
     "unlimited": "نامحدود",
     "used": "استفاده شده",
     "of": "از",
@@ -462,6 +463,10 @@
       "unlimited": "نامحدود",
       "buyTrafficGb": "خرید {{gb}} GB",
       "buyUnlimited": "خرید نامحدود",
+      "buyTrafficLimited": "خرید ترافیک (سرور محدود)",
+      "buyTrafficLimitedTitle": "خرید ترافیک (سرور محدود)",
+      "currentTrafficLimitedLimit": "محدودیت فعلی: {{limit}} GB",
+      "trafficLimitedUnavailable": "خرید ترافیک برای سرور محدود در دسترس نیست",
       "manageServers": "مدیریت اسکوادها",
       "manageServersTitle": "مدیریت اسکوادها",
       "connectedDevices": "دستگاه‌های متصل",

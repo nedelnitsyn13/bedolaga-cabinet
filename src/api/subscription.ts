@@ -7,6 +7,7 @@ import type {
   SubscriptionsListResponse,
   RenewalOption,
   TrafficPackage,
+  LimitedCompanionTraffic,
   TrialInfo,
   PurchaseOptions,
   PurchaseSelection,
@@ -168,6 +169,50 @@ export const subscriptionApi = {
       withSubId(subscriptionId),
     );
     return response.data;
+  },
+
+  // ── Limited-companion server traffic ───────────────────────────────
+
+  getLimitedTraffic: async (subscriptionId?: number): Promise<LimitedCompanionTraffic> => {
+    const response = await apiClient.get<LimitedCompanionTraffic>(
+      '/cabinet/subscription/limited-traffic',
+      withSubId(subscriptionId),
+    );
+    return response.data;
+  },
+
+  getLimitedTrafficPackages: async (subscriptionId?: number): Promise<TrafficPackage[]> => {
+    const response = await apiClient.get<TrafficPackage[]>(
+      '/cabinet/subscription/limited-traffic-packages',
+      withSubId(subscriptionId),
+    );
+    return response.data;
+  },
+
+  purchaseLimitedTraffic: async (
+    gb: number,
+    subscriptionId?: number,
+  ): Promise<{
+    success: boolean;
+    message: string;
+    gb_added: number;
+    new_purchased_traffic_gb: number;
+    new_total_limit_gb: number;
+    amount_paid_kopeks: number;
+    new_balance_kopeks: number;
+  }> => {
+    const response = await apiClient.post(
+      '/cabinet/subscription/limited-traffic',
+      ...bodyWithSubId({ gb }, subscriptionId),
+    );
+    return response.data;
+  },
+
+  saveLimitedTrafficCart: async (trafficGb: number, subscriptionId?: number): Promise<void> => {
+    await apiClient.post(
+      '/cabinet/subscription/limited-traffic/save-cart',
+      ...bodyWithSubId({ gb: trafficGb }, subscriptionId),
+    );
   },
 
   // ── Devices ─────────────────────────────────────────────────────────

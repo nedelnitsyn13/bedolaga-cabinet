@@ -109,6 +109,18 @@ export interface Subscription {
   traffic_reset_mode?: string;
 }
 
+// Usage/limit for the limited-companion server's own traffic pool (separate
+// from Subscription.traffic_limit_gb/traffic_used_gb). available=false means
+// no companion is linked to this subscription, or the feature is disabled.
+export interface LimitedCompanionTraffic {
+  available: boolean;
+  used_gb: number;
+  base_limit_gb: number;
+  purchased_gb: number;
+  total_limit_gb: number;
+  used_percent: number;
+}
+
 // Response wrapper for subscription status endpoint
 export interface SubscriptionStatusResponse {
   has_subscription: boolean;
