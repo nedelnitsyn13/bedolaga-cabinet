@@ -678,7 +678,8 @@
     "tariff": {
       "perDay": "/ day",
       "flexiblePayment": "Flexible payment",
-      "selectForRenewal": "Select for renewal"
+      "selectForRenewal": "Select for renewal",
+      "limitedCompanionTraffic": "Limited server: {{traffic}}"
     },
     "customDays": {
       "title": "Custom number of days",

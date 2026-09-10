@@ -348,6 +348,10 @@ export interface Tariff {
   traffic_reset_mode?: string;
   // Multi-tariff: already purchased by user
   is_purchased?: boolean;
+  // Лимитный сервер-компаньон (LIMITED_COMPANION_SQUAD_UUID) — отсутствует, если
+  // фича выключена настройками
+  limited_companion_traffic_gb?: number;
+  limited_companion_traffic_label?: string;
 }
 
 export interface TariffsPurchaseOptions {
