@@ -54,6 +54,7 @@ import Twemoji from 'react-twemoji';
 import { DeviceTopupSheet } from '../components/subscription/sheets/DeviceTopupSheet';
 import { DeviceReductionSheet } from '../components/subscription/sheets/DeviceReductionSheet';
 import { TrafficTopupSheet } from '../components/subscription/sheets/TrafficTopupSheet';
+import { LimitedTrafficTopupSheet } from '../components/subscription/sheets/LimitedTrafficTopupSheet';
 import { ServerManagementSheet } from '../components/subscription/sheets/ServerManagementSheet';
 import { DeleteSubscriptionSheet } from '../components/subscription/sheets/DeleteSubscriptionSheet';
 import { PageSkeleton, Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
@@ -231,6 +232,10 @@ export default function Subscription() {
   const [targetDeviceLimit, setTargetDeviceLimit] = useState<number>(1);
   const [showTrafficTopup, setShowTrafficTopup] = useState(false);
   const [selectedTrafficPackage, setSelectedTrafficPackage] = useState<number | null>(null);
+  const [showLimitedTrafficTopup, setShowLimitedTrafficTopup] = useState(false);
+  const [selectedLimitedTrafficPackage, setSelectedLimitedTrafficPackage] = useState<number | null>(
+    null,
+  );
   const [showServerManagement, setShowServerManagement] = useState(false);
   const [selectedServersToUpdate, setSelectedServersToUpdate] = useState<string[]>([]);
 
@@ -308,6 +313,16 @@ export default function Subscription() {
     refetchOnMount: 'always',
   });
   const purchaseOptions = purchaseOptionsQuery.data;
+
+  // Limited-companion server's own traffic pool (separate from the main
+  // subscription's traffic_limit_gb/traffic_used_gb). available=false when
+  // no companion is linked to this subscription.
+  const limitedTrafficQuery = useQuery({
+    queryKey: ['limited-traffic', subscriptionId],
+    queryFn: () => subscriptionApi.getLimitedTraffic(subscriptionId),
+    enabled: !!subscription,
+  });
+  const limitedTraffic = limitedTrafficQuery.data;
 
   // Состояние автооплаты спрашиваем, только когда она включена: иначе бэкенд
   // отвечает 403, и браузер печатает красную строку с полным стеком на каждый
@@ -539,6 +554,7 @@ export default function Subscription() {
     setShowDeviceTopup(false);
     setShowDeviceReduction(false);
     setShowTrafficTopup(false);
+    setShowLimitedTrafficTopup(false);
     setShowServerManagement(false);
   }, []);
   useCloseOnSuccessNotification(handleCloseAllModals);
@@ -975,6 +991,30 @@ export default function Subscription() {
                   compact
                 />
               </div>
+
+              {/* ─── Limited Companion Server Traffic ─── */}
+              {limitedTraffic?.available && (
+                <div className="mb-6">
+                  <div className="mb-2.5 flex items-center justify-between">
+                    <span className="text-[11px] font-medium uppercase tracking-wider text-dark-400">
+                      {t('subscription.limitedServerTraffic')}
+                    </span>
+                    <span className="font-mono text-[11px] text-dark-400">
+                      {`${formatTraffic(limitedTraffic.used_gb)} / ${formatTraffic(limitedTraffic.total_limit_gb)}`}
+                    </span>
+                  </div>
+                  <div className="mb-2 text-[10px] text-dark-400">
+                    {t('subscription.trafficReset.MONTH_ROLLING')}
+                  </div>
+                  <TrafficProgressBar
+                    usedGb={limitedTraffic.used_gb}
+                    limitGb={limitedTraffic.total_limit_gb}
+                    percent={limitedTraffic.used_percent}
+                    isUnlimited={false}
+                    compact
+                  />
+                </div>
+              )}
 
               {/* ─── Connect Device Button ─── */}
               {subscription.subscription_url && (
@@ -1762,6 +1802,23 @@ export default function Subscription() {
                   subscriptionId={subscriptionId}
                   selectedTrafficPackage={selectedTrafficPackage}
                   onSelectedTrafficPackageChange={setSelectedTrafficPackage}
+                  purchaseOptions={purchaseOptions}
+                  isDark={isDark}
+                />
+              </div>
+            )}
+
+            {/* Buy Limited Companion Server Traffic */}
+            {limitedTraffic?.available && (
+              <div className="mt-4">
+                <LimitedTrafficTopupSheet
+                  open={showLimitedTrafficTopup}
+                  onOpen={() => setShowLimitedTrafficTopup(true)}
+                  onClose={() => setShowLimitedTrafficTopup(false)}
+                  subscriptionId={subscriptionId}
+                  limitedTraffic={limitedTraffic}
+                  selectedTrafficPackage={selectedLimitedTrafficPackage}
+                  onSelectedTrafficPackageChange={setSelectedLimitedTrafficPackage}
                   purchaseOptions={purchaseOptions}
                   isDark={isDark}
                 />

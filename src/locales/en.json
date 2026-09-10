@@ -380,6 +380,7 @@
       "MONTH_ROLLING": "Resets every 30 days"
     },
     "traffic": "Traffic",
+    "limitedServerTraffic": "Limited server",
     "unlimited": "Unlimited",
     "used": "Used",
     "of": "of",
@@ -630,6 +631,10 @@
       "unlimited": "Unlimited",
       "buyTrafficGb": "Buy {{gb}} GB",
       "buyUnlimited": "Buy Unlimited",
+      "buyTrafficLimited": "Buy more traffic (limited server)",
+      "buyTrafficLimitedTitle": "Buy more traffic (limited server)",
+      "currentTrafficLimitedLimit": "Current limit: {{limit}} GB",
+      "trafficLimitedUnavailable": "Traffic purchase is not available for the limited server",
       "manageServers": "Squad management",
       "manageServersTitle": "Squad management",
       "connectedDevices": "Connected devices",

@@ -386,6 +386,7 @@
       "MONTH_ROLLING": "Сброс раз в 30 дней"
     },
     "traffic": "Трафик",
+    "limitedServerTraffic": "Лимитный сервер",
     "unlimited": "Безлимит",
     "used": "Использовано",
     "of": "из",
@@ -650,6 +651,10 @@
       "unlimited": "Безлимит",
       "buyTrafficGb": "Купить {{gb}} ГБ",
       "buyUnlimited": "Купить Безлимит",
+      "buyTrafficLimited": "Докупить трафик (лимитный сервер)",
+      "buyTrafficLimitedTitle": "Докупить трафик (лимитный сервер)",
+      "currentTrafficLimitedLimit": "Текущий лимит: {{limit}} ГБ",
+      "trafficLimitedUnavailable": "Докупка трафика недоступна для лимитного сервера",
       "manageServers": "Управление локациями",
       "manageServersTitle": "Управление локациями",
       "connectedDevices": "Подключённые устройства",

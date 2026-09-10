@@ -352,6 +352,7 @@
       "MONTH_ROLLING": "每30天重置"
     },
     "traffic": "流量",
+    "limitedServerTraffic": "限量服务器",
     "unlimited": "无限",
     "used": "已使用",
     "of": "/",
@@ -462,6 +463,10 @@
       "unlimited": "无限制",
       "buyTrafficGb": "购买 {{gb}} GB",
       "buyUnlimited": "购买无限流量",
+      "buyTrafficLimited": "购买流量（限量服务器）",
+      "buyTrafficLimitedTitle": "购买流量（限量服务器）",
+      "currentTrafficLimitedLimit": "当前限额：{{limit}} GB",
+      "trafficLimitedUnavailable": "限量服务器暂不支持购买流量",
       "manageServers": "小队管理",
       "manageServersTitle": "小队管理",
       "connectedDevices": "已连接设备",
