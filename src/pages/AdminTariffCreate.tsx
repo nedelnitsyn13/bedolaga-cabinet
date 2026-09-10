@@ -52,6 +52,9 @@ export default function AdminTariffCreate() {
   // прямо на этой форме, и индекс после правки указывал бы на другой период.
   const [highlightPeriodDays, setHighlightPeriodDays] = useState<number | null>(null);
   const [selectedSquads, setSelectedSquads] = useState<string[]>([]);
+  // Свой лимит трафика (ГБ) на сервер этого тарифа — по squad_uuid. Пусто/0 = общий
+  // лимит тарифа (traffic_limit_gb), как и на телеграм-редакторе тарифа в боте.
+  const [serverTrafficLimits, setServerTrafficLimits] = useState<Record<string, number | ''>>({});
   const [selectedExternalSquad, setSelectedExternalSquad] = useState<string | null>(null);
   const [selectedPromoGroups, setSelectedPromoGroups] = useState<number[]>([]);
   const [dailyPriceKopeks, setDailyPriceKopeks] = useState<number | ''>(0);
@@ -130,6 +133,14 @@ export default function AdminTariffCreate() {
       setPeriodPrices(data.period_prices?.length ? data.period_prices : []);
       setHighlightPeriodDays(data.highlight_period_days ?? null);
       setSelectedSquads(data.allowed_squads || []);
+      setServerTrafficLimits(
+        Object.fromEntries(
+          Object.entries(data.server_traffic_limits || {}).map(([uuid, limit]) => [
+            uuid,
+            limit.traffic_limit_gb,
+          ]),
+        ),
+      );
       setSelectedExternalSquad(data.external_squad_uuid || null);
       setSelectedPromoGroups(
         data.promo_groups?.filter((pg) => pg.is_selected).map((pg) => pg.id) || [],
@@ -192,6 +203,11 @@ export default function AdminTariffCreate() {
       // поле не уходит — сервер отверг бы ноль.
       highlight_period_days: isEdit ? (highlightPayload ?? 0) : (highlightPayload ?? undefined),
       allowed_squads: selectedSquads,
+      server_traffic_limits: Object.fromEntries(
+        Object.entries(serverTrafficLimits)
+          .filter(([, gb]) => toNumber(gb) > 0)
+          .map(([uuid, gb]) => [uuid, { traffic_limit_gb: toNumber(gb) }]),
+      ),
       external_squad_uuid: selectedExternalSquad || null,
       promo_group_ids: selectedPromoGroups,
       traffic_topup_enabled: trafficTopupEnabled,
@@ -219,6 +235,17 @@ export default function AdminTariffCreate() {
     setSelectedSquads((prev) =>
       prev.includes(uuid) ? prev.filter((s) => s !== uuid) : [...prev, uuid],
     );
+  };
+
+  const updateServerTrafficLimit = (uuid: string, value: string) => {
+    if (value === '') {
+      setServerTrafficLimits((prev) => ({ ...prev, [uuid]: '' }));
+      return;
+    }
+    const gb = parseInt(value, 10);
+    if (!Number.isNaN(gb)) {
+      setServerTrafficLimits((prev) => ({ ...prev, [uuid]: Math.max(0, gb) }));
+    }
   };
 
   const togglePromoGroup = (groupId: number) => {
@@ -843,11 +870,9 @@ export default function AdminTariffCreate() {
                 {servers.map((server: ServerInfo) => {
                   const isSelected = selectedSquads.includes(server.squad_uuid);
                   return (
-                    <button
+                    <div
                       key={server.id}
-                      type="button"
-                      onClick={() => toggleServer(server.squad_uuid)}
-                      className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors ${
+                      className={`flex w-full items-center gap-3 rounded-lg p-3 transition-colors ${
                         isSelected
                           ? isDaily
                             ? 'bg-warning-500/20 text-warning-300'
@@ -855,26 +880,53 @@ export default function AdminTariffCreate() {
                           : 'bg-dark-800 text-dark-300 hover:bg-dark-700'
                       }`}
                     >
-                      <div
-                        className={`flex h-5 w-5 items-center justify-center rounded ${
-                          isSelected
-                            ? isDaily
-                              ? 'bg-warning-500 text-white'
-                              : 'bg-accent-500 text-on-accent'
-                            : 'bg-dark-600'
-                        }`}
+                      <button
+                        type="button"
+                        onClick={() => toggleServer(server.squad_uuid)}
+                        className="flex min-w-0 flex-1 items-center gap-3 text-left"
                       >
-                        {isSelected && <CheckIcon />}
-                      </div>
-                      <span className="flex-1 text-sm font-medium">
-                        <Twemoji options={{ className: 'twemoji', folder: 'svg', ext: '.svg' }}>
-                          {server.display_name}
-                        </Twemoji>
-                      </span>
-                      {server.country_code && (
-                        <span className="text-xs text-dark-500">{server.country_code}</span>
+                        <div
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${
+                            isSelected
+                              ? isDaily
+                                ? 'bg-warning-500 text-white'
+                                : 'bg-accent-500 text-on-accent'
+                              : 'bg-dark-600'
+                          }`}
+                        >
+                          {isSelected && <CheckIcon />}
+                        </div>
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                          <Twemoji options={{ className: 'twemoji', folder: 'svg', ext: '.svg' }}>
+                            {server.display_name}
+                          </Twemoji>
+                        </span>
+                        {server.country_code && (
+                          <span className="shrink-0 text-xs text-dark-500">
+                            {server.country_code}
+                          </span>
+                        )}
+                      </button>
+                      {isSelected && (
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          <input
+                            type="number"
+                            value={serverTrafficLimits[server.squad_uuid] ?? ''}
+                            onChange={(e) =>
+                              updateServerTrafficLimit(server.squad_uuid, e.target.value)
+                            }
+                            className="input h-8 w-16 px-2 text-sm"
+                            min={0}
+                            step={1}
+                            placeholder={t('admin.tariffs.serverTrafficLimitPlaceholder')}
+                            title={t('admin.tariffs.serverTrafficLimitHint')}
+                          />
+                          <span className="text-xs text-dark-500">
+                            {t('admin.tariffs.serverTrafficLimitUnit')}
+                          </span>
+                        </div>
                       )}
-                    </button>
+                    </div>
                   );
                 })}
               </div>
