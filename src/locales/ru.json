@@ -698,7 +698,8 @@
     "tariff": {
       "perDay": "/ день",
       "flexiblePayment": "Гибкая оплата",
-      "selectForRenewal": "Выбрать для продления"
+      "selectForRenewal": "Выбрать для продления",
+      "limitedCompanionTraffic": "Лимитный сервер: {{traffic}}"
     },
     "customDays": {
       "title": "Произвольное кол-во дней",

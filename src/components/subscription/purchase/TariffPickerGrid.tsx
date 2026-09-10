@@ -6,7 +6,7 @@ import { useCurrency } from '../../../hooks/useCurrency';
 import { usePromoDiscount } from '../../../hooks/usePromoDiscount';
 import { dailyPriceQuote } from './dailyPrice';
 import { getGlassColors } from '../../../utils/glassTheme';
-import { ArrowDownIcon, DevicesIcon, RestartIcon } from '@/components/icons';
+import { ArrowDownIcon, DevicesIcon, GlobeIcon, RestartIcon } from '@/components/icons';
 import type { Tariff, Subscription, PurchaseOptions } from '../../../types';
 
 // ──────────────────────────────────────────────────────────────────
@@ -203,6 +203,16 @@ export function TariffPickerGrid({
                       <RestartIcon className="h-4 w-4 text-dark-400" />
                       <span className="text-dark-300">
                         {t(`subscription.trafficReset.${tariff.traffic_reset_mode}`)}
+                      </span>
+                    </div>
+                  )}
+                  {tariff.limited_companion_traffic_label && (
+                    <div className="flex items-center gap-1.5">
+                      <GlobeIcon className="h-4 w-4 text-dark-400" />
+                      <span className="text-dark-300">
+                        {t('subscription.tariff.limitedCompanionTraffic', {
+                          traffic: tariff.limited_companion_traffic_label,
+                        })}
                       </span>
                     </div>
                   )}

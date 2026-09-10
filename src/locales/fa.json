@@ -535,7 +535,8 @@
     "tariff": {
       "perDay": "/ روز",
       "flexiblePayment": "پرداخت انعطاف‌پذیر",
-      "selectForRenewal": "انتخاب برای تمدید"
+      "selectForRenewal": "انتخاب برای تمدید",
+      "limitedCompanionTraffic": "سرور محدود: {{traffic}}"
     },
     "customDays": {
       "title": "تعداد روز سفارشی",

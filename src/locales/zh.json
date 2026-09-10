@@ -535,7 +535,8 @@
     "tariff": {
       "perDay": "/ 天",
       "flexiblePayment": "灵活付费",
-      "selectForRenewal": "选择续费"
+      "selectForRenewal": "选择续费",
+      "limitedCompanionTraffic": "限量服务器：{{traffic}}"
     },
     "customDays": {
       "title": "自定义天数",
