@@ -3493,6 +3493,8 @@
       "serverTrafficLimitPlaceholder": "tariff default",
       "serverTrafficLimitHint": "Custom traffic limit for this server. Empty — use the tariff's general limit.",
       "serverTrafficLimitUnit": "GB",
+      "companionServerHint": "Limited companion server — its limit is set independently of the selection above, no need to select it.",
+      "companionServerSelectedWarning": "⚠️ This is the limited companion server — don't select it here, or the main account will get unlimited direct access to it, bypassing its own companion limit.",
       "noServersAvailable": "No servers available",
       "promoGroupsTitle": "Promo Groups",
       "promoGroupsHint": "Select promo groups that have access to this tariff. If none selected, available to everyone.",
