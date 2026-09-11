@@ -91,6 +91,11 @@ export interface SubscriptionTabProps {
   selectedTrafficGb: string;
   onSelectedTrafficGbChange: (gb: string) => void;
 
+  // Limited-companion (capped extra server) traffic grant form
+  limitedTrafficGb: string;
+  onLimitedTrafficGbChange: (gb: string) => void;
+  onAddLimitedTraffic: (gb: number) => Promise<void>;
+
   // Panel info
   panelInfo: UserPanelInfo | null;
   panelInfoLoading: boolean;
@@ -167,6 +172,9 @@ export function SubscriptionTab(props: SubscriptionTabProps) {
     onSelectedTariffIdChange,
     selectedTrafficGb,
     onSelectedTrafficGbChange,
+    limitedTrafficGb,
+    onLimitedTrafficGbChange,
+    onAddLimitedTraffic,
     panelInfo,
     panelInfoLoading,
     copyToClipboard,
@@ -564,6 +572,39 @@ export function SubscriptionTab(props: SubscriptionTabProps) {
                 </div>
               </div>
             )}
+
+          {/* Add Limited-Companion Traffic */}
+          {hasPermission('users:subscription') && selectedSub.has_limited_companion && (
+            <div className="rounded-xl bg-dark-800/50 p-4">
+              <div className="mb-3 text-sm font-medium text-dark-200">
+                {t('admin.users.detail.subscription.addLimitedTraffic')}
+                <span className="ml-2 text-xs text-dark-400">
+                  ({selectedSub.limited_companion_traffic_limit_gb} {t('common.units.gb')})
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  value={limitedTrafficGb}
+                  onChange={(e) => onLimitedTrafficGbChange(e.target.value)}
+                  placeholder={t('admin.users.detail.subscription.gbAmount')}
+                  className="input flex-1"
+                  min={1}
+                  max={10000}
+                />
+                <button
+                  onClick={() => limitedTrafficGb && onAddLimitedTraffic(Number(limitedTrafficGb))}
+                  disabled={actionLoading || !limitedTrafficGb}
+                  className="shrink-0 rounded-lg bg-accent-500 px-4 py-2 text-sm text-on-accent transition-colors hover:bg-accent-600 disabled:opacity-50"
+                >
+                  {t('admin.users.detail.subscription.addButton')}
+                </button>
+              </div>
+              <div className="mt-2 text-xs text-dark-500">
+                {t('admin.users.detail.subscription.addLimitedTrafficNote')}
+              </div>
+            </div>
+          )}
 
           {props.reachabilityLink && (
             <Link to={props.reachabilityLink} className="btn-secondary w-full text-center">

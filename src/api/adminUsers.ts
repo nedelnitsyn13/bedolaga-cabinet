@@ -27,6 +27,8 @@ export interface UserSubscriptionInfo {
   days_remaining: number;
   purchased_traffic_gb: number;
   traffic_purchases: TrafficPurchaseInfo[];
+  has_limited_companion: boolean;
+  limited_companion_traffic_limit_gb: number;
 }
 
 export interface UserPromoGroupInfo {
@@ -349,6 +351,7 @@ export interface UpdateSubscriptionRequest {
     | 'activate'
     | 'create'
     | 'add_traffic'
+    | 'add_limited_traffic'
     | 'remove_traffic'
     | 'set_device_limit'
     | 'shorten';
