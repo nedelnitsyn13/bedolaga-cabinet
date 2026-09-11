@@ -102,6 +102,9 @@ export default function AdminUserDetail() {
   // Traffic packages
   const [selectedTrafficGb, setSelectedTrafficGb] = useState<string>('');
 
+  // Limited-companion (capped extra server) traffic grant
+  const [limitedTrafficGb, setLimitedTrafficGb] = useState<string>('');
+
   // Devices
   const [devices, setDevices] = useState<
     {
@@ -523,6 +526,25 @@ export default function AdminUserDetail() {
       });
       notify.success(t('admin.users.detail.subscription.trafficAdded'));
       setSelectedTrafficGb('');
+      await loadUser();
+    } catch {
+      notify.error(t('admin.users.userActions.error'), t('common.error'));
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleAddLimitedTraffic = async (gb: number) => {
+    if (!userId) return;
+    setActionLoading(true);
+    try {
+      await adminUsersApi.updateSubscription(userId, {
+        action: 'add_limited_traffic',
+        traffic_gb: gb,
+        ...(activeSubscriptionId ? { subscription_id: activeSubscriptionId } : {}),
+      });
+      notify.success(t('admin.users.detail.subscription.trafficAdded'));
+      setLimitedTrafficGb('');
       await loadUser();
     } catch {
       notify.error(t('admin.users.userActions.error'), t('common.error'));
@@ -956,6 +978,9 @@ export default function AdminUserDetail() {
             onUpdateSubscription={handleUpdateSubscription}
             onSetDeviceLimit={handleSetDeviceLimit}
             onAddTraffic={handleAddTraffic}
+            limitedTrafficGb={limitedTrafficGb}
+            onLimitedTrafficGbChange={setLimitedTrafficGb}
+            onAddLimitedTraffic={handleAddLimitedTraffic}
             onRemoveTraffic={handleRemoveTraffic}
             onResetDevices={handleResetDevices}
             onDeleteDevice={handleDeleteDevice}
