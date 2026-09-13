@@ -95,6 +95,7 @@ export interface SubscriptionTabProps {
   limitedTrafficGb: string;
   onLimitedTrafficGbChange: (gb: string) => void;
   onAddLimitedTraffic: (gb: number) => Promise<void>;
+  onSyncLimitedCompanion: () => Promise<void>;
 
   // Panel info
   panelInfo: UserPanelInfo | null;
@@ -175,6 +176,7 @@ export function SubscriptionTab(props: SubscriptionTabProps) {
     limitedTrafficGb,
     onLimitedTrafficGbChange,
     onAddLimitedTraffic,
+    onSyncLimitedCompanion,
     panelInfo,
     panelInfoLoading,
     copyToClipboard,
@@ -403,6 +405,53 @@ export function SubscriptionTab(props: SubscriptionTabProps) {
               </div>
             </div>
           </div>
+
+          {/* Limited-companion account — a separate panel user with its own
+              traffic quota, so the "traffic" figure above says nothing about
+              it. `limited_companion_traffic_used_gb` is written only by a
+              top-up's resync and the periodic monitoring pass, hence the
+              explicit sync button rather than a value that refreshes itself. */}
+          {selectedSub.has_limited_companion && (
+            <div className="rounded-xl bg-dark-800/50 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-dark-200">
+                    {t('admin.users.detail.subscription.limitedCompanionTitle')}
+                  </div>
+                  <div className="mt-1 text-dark-100">
+                    {selectedSub.limited_companion_traffic_used_gb.toFixed(1)} /{' '}
+                    {selectedSub.limited_companion_traffic_limit_gb === 0
+                      ? '∞'
+                      : selectedSub.limited_companion_traffic_limit_gb}{' '}
+                    {t('common.units.gb')}
+                  </div>
+                  {selectedSub.limited_companion_purchased_traffic_gb > 0 && (
+                    <div className="mt-0.5 text-xs text-dark-400">
+                      {t('admin.users.detail.subscription.limitedCompanionPurchased', {
+                        gb: selectedSub.limited_companion_purchased_traffic_gb,
+                      })}
+                    </div>
+                  )}
+                  {selectedSub.limited_companion_panel_id != null && (
+                    <div className="mt-0.5 truncate text-xs text-dark-500">
+                      {t('admin.users.detail.subscription.limitedCompanionPanelId')}:{' '}
+                      {selectedSub.limited_companion_panel_id}
+                    </div>
+                  )}
+                </div>
+                {hasPermission('users:subscription') && (
+                  <button
+                    onClick={() => onSyncLimitedCompanion()}
+                    disabled={actionLoading}
+                    className="flex shrink-0 items-center gap-2 rounded-lg bg-dark-700 px-3 py-2 text-sm text-dark-200 transition-colors hover:bg-dark-600 disabled:opacity-50"
+                  >
+                    <RefreshIcon className="h-4 w-4" />
+                    {t('admin.users.detail.subscription.limitedCompanionSync')}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* SBP (Platega) recurring auto-payment — status comes from the admin
               detail response; cancel is idempotent on the backend. */}

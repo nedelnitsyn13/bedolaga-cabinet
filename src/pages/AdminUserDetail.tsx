@@ -553,6 +553,23 @@ export default function AdminUserDetail() {
     }
   };
 
+  const handleSyncLimitedCompanion = async () => {
+    if (!userId) return;
+    setActionLoading(true);
+    try {
+      await adminUsersApi.updateSubscription(userId, {
+        action: 'sync_limited_companion',
+        ...(activeSubscriptionId ? { subscription_id: activeSubscriptionId } : {}),
+      });
+      notify.success(t('admin.users.detail.subscription.limitedCompanionSynced'));
+      await loadUser();
+    } catch {
+      notify.error(t('admin.users.userActions.error'), t('common.error'));
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleRemoveTraffic = async (purchaseId: number) => {
     if (!userId) return;
     setActionLoading(true);
@@ -981,6 +998,7 @@ export default function AdminUserDetail() {
             limitedTrafficGb={limitedTrafficGb}
             onLimitedTrafficGbChange={setLimitedTrafficGb}
             onAddLimitedTraffic={handleAddLimitedTraffic}
+            onSyncLimitedCompanion={handleSyncLimitedCompanion}
             onRemoveTraffic={handleRemoveTraffic}
             onResetDevices={handleResetDevices}
             onDeleteDevice={handleDeleteDevice}
