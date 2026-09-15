@@ -27,7 +27,6 @@ import {
   DevicesIcon,
   DownloadIcon,
   TrashIcon,
-  WarningIcon,
 } from '../components/icons';
 import { useHaptic, usePlatform } from '../platform';
 import { resolveConnectionUrlForUi } from '../utils/connectionLink';
@@ -1090,24 +1089,6 @@ export default function Subscription() {
                     isUnlimited={false}
                     compact
                   />
-                  {limitedTraffic.total_limit_gb > 0 &&
-                    limitedTraffic.used_gb >= limitedTraffic.total_limit_gb && (
-                      <div
-                        className="mt-2 flex items-start gap-2 rounded-lg px-2.5 py-2"
-                        style={{
-                          background: 'rgba(255,184,0,0.08)',
-                          border: '1px solid rgba(255,184,0,0.2)',
-                        }}
-                      >
-                        <WarningIcon className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-[rgb(var(--color-urgent-400))]" />
-                        <p
-                          className="text-[11px] leading-snug"
-                          style={{ color: 'rgb(var(--color-urgent-400))' }}
-                        >
-                          {t('subscription.limitedServerTrafficExhausted')}
-                        </p>
-                      </div>
-                    )}
                 </div>
               )}
 

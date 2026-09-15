@@ -381,7 +381,6 @@
     },
     "traffic": "Traffic",
     "limitedServerTraffic": "Limited server",
-    "limitedServerTrafficExhausted": "The traffic limit on this server is used up — access to it has been disabled. Buy more traffic to restore access.",
     "unlimited": "Unlimited",
     "used": "Used",
     "of": "of",
