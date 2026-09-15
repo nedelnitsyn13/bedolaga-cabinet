@@ -25,13 +25,21 @@ import {
 } from './SubscriptionCard';
 import { SupportDetails } from './SupportDetails';
 
-const PANELS: readonly SubscriptionPanel[] = ['extend', 'shorten', 'tariff', 'traffic', 'devices'];
+const PANELS: readonly SubscriptionPanel[] = [
+  'extend',
+  'shorten',
+  'tariff',
+  'traffic',
+  'devices',
+  'limitedTraffic',
+];
 /** Куда подкрутить по `?do=`: формы живут в карточке подписки, устройства — своя карточка. */
 const SCROLL_TARGET: Record<string, string> = {
   devices: 'subscription-extend',
   create: 'subscription-create',
   tariff: 'subscription-tariff',
   traffic: 'subscription-traffic',
+  limitedTraffic: 'subscription-limited-traffic',
 };
 
 export interface SubscriptionTabActions extends SubscriptionCardActions {

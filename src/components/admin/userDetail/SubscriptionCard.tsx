@@ -19,10 +19,22 @@ import { formatGb } from '@/utils/formatNumber';
 import { uiLocale } from '@/utils/uiLocale';
 import { usePaymentMethodLabel } from './ActivityRows';
 import { ExtendMenu } from './ExtendMenu';
-import { DaysForm, DeviceLimitForm, TariffForm, TrafficForm } from './SubscriptionForms';
+import {
+  DaysForm,
+  DeviceLimitForm,
+  LimitedSquadTrafficForm,
+  TariffForm,
+  TrafficForm,
+} from './SubscriptionForms';
 import { KeyValues, LinkAction, Section } from './sectionParts';
 
-export type SubscriptionPanel = 'extend' | 'shorten' | 'tariff' | 'traffic' | 'devices';
+export type SubscriptionPanel =
+  | 'extend'
+  | 'shorten'
+  | 'tariff'
+  | 'traffic'
+  | 'devices'
+  | 'limitedTraffic';
 
 export interface SubscriptionCardActions {
   extend: (days: number) => Promise<boolean>;
@@ -31,6 +43,8 @@ export interface SubscriptionCardActions {
   activate: () => Promise<boolean>;
   addTraffic: (gb: number) => Promise<boolean>;
   removeTraffic: (purchaseId: number) => Promise<boolean>;
+  addLimitedSquadTraffic: (gb: number) => Promise<boolean>;
+  removeLimitedSquadTraffic: (gb: number) => Promise<boolean>;
   setDeviceLimit: (limit: number) => Promise<boolean>;
   cancelSbp: () => Promise<boolean>;
 }
@@ -219,6 +233,28 @@ export function SubscriptionCard({
             </ul>
           )}
         </div>
+        {sub.limited_traffic_enabled && (
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-baseline justify-between gap-3 text-xs">
+              <span className="text-dark-500">{t(`${ns}.addLimitedTraffic`)}</span>
+              <span className="font-medium tabular-nums text-dark-200">
+                {trafficLabel(sub.limited_traffic_used_gb ?? 0, sub.limited_traffic_limit_gb ?? 0)}
+              </span>
+            </div>
+            <TrafficBar
+              usedGb={sub.limited_traffic_used_gb ?? 0}
+              limitGb={sub.limited_traffic_limit_gb ?? 0}
+              label={false}
+            />
+            {(sub.limited_traffic_purchased_gb ?? 0) > 0 && (
+              <span className="text-xs text-dark-500">
+                {t(`${ns}.limitedTrafficPurchased`, {
+                  gb: formatGb(sub.limited_traffic_purchased_gb ?? 0),
+                })}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {canManage && (
@@ -249,6 +285,14 @@ export function SubscriptionCard({
             {topupPackages.length > 0 && (
               <PanelButton active={openPanel === 'traffic'} onClick={() => toggle('traffic')}>
                 {t(`${ns}.addTraffic`)}
+              </PanelButton>
+            )}
+            {sub.limited_traffic_enabled && (
+              <PanelButton
+                active={openPanel === 'limitedTraffic'}
+                onClick={() => toggle('limitedTraffic')}
+              >
+                {t(`${ns}.addLimitedTraffic`)}
               </PanelButton>
             )}
             <PanelButton active={openPanel === 'devices'} onClick={() => toggle('devices')}>
@@ -300,6 +344,14 @@ export function SubscriptionCard({
               packages={topupPackages}
               busy={busy}
               onSubmit={actions.addTraffic}
+              onClose={() => onOpenPanel(null)}
+            />
+          )}
+          {openPanel === 'limitedTraffic' && (
+            <LimitedSquadTrafficForm
+              busy={busy}
+              onAdd={actions.addLimitedSquadTraffic}
+              onRemove={actions.removeLimitedSquadTraffic}
               onClose={() => onOpenPanel(null)}
             />
           )}

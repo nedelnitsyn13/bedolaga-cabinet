@@ -89,6 +89,26 @@ export function useUserDetailActions(userId: number, data: UserDetailData) {
           }),
         { success: t('admin.users.detail.subscription.trafficRemoved'), after: refreshCard },
       ),
+    addLimitedSquadTraffic: (gb: number) =>
+      run(
+        () =>
+          adminUsersApi.updateSubscription(userId, {
+            action: 'add_limited_squad_traffic',
+            traffic_gb: gb,
+            ...withSubscription,
+          }),
+        { success: t('admin.users.detail.subscription.limitedTrafficAdded'), after: refreshCard },
+      ),
+    removeLimitedSquadTraffic: (gb: number) =>
+      run(
+        () =>
+          adminUsersApi.updateSubscription(userId, {
+            action: 'remove_limited_squad_traffic',
+            traffic_gb: gb,
+            ...withSubscription,
+          }),
+        { success: t('admin.users.detail.subscription.limitedTrafficRemoved'), after: refreshCard },
+      ),
     setDeviceLimit: (limit: number) =>
       run(
         () =>
