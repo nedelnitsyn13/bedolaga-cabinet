@@ -188,6 +188,65 @@ export function TrafficForm({
   );
 }
 
+export function LimitedSquadTrafficForm({
+  busy,
+  onAdd,
+  onRemove,
+  onClose,
+}: {
+  busy: boolean;
+  onAdd: (gb: number) => Promise<boolean>;
+  onRemove: (gb: number) => Promise<boolean>;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const id = useId();
+  const [value, setValue] = useState('10');
+  const parsed = Number(value);
+  const valid = Number.isFinite(parsed) && parsed > 0;
+  return (
+    <InlineForm id="subscription-limited-traffic" hint={t(`${ns}.addLimitedTrafficNote`)}>
+      <label htmlFor={id} className="flex flex-col gap-1 text-xs text-dark-500">
+        {t(`${ns}.gbAmount`)}
+        <input
+          id={id}
+          type="number"
+          inputMode="decimal"
+          min={0}
+          step="0.1"
+          value={value}
+          disabled={busy}
+          onChange={(event) => setValue(event.target.value)}
+          className="input w-28 py-2"
+        />
+      </label>
+      <button
+        type="button"
+        disabled={busy || !valid}
+        onClick={async () => {
+          if (await onAdd(parsed)) onClose();
+        }}
+        className="btn-primary"
+      >
+        {t(`${ns}.addButton`)}
+      </button>
+      <button
+        type="button"
+        disabled={busy || !valid}
+        onClick={async () => {
+          if (await onRemove(parsed)) onClose();
+        }}
+        className="btn-danger"
+      >
+        {t(`${ns}.removeLimitedTraffic`)}
+      </button>
+      <button type="button" onClick={onClose} className="btn-secondary">
+        {t('common.cancel')}
+      </button>
+    </InlineForm>
+  );
+}
+
 export function DeviceLimitForm({
   current,
   max,

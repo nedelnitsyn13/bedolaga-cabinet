@@ -32,6 +32,11 @@ export interface UserSubscriptionInfo {
   limited_companion_traffic_used_gb?: number;
   limited_companion_purchased_traffic_gb?: number;
   limited_companion_panel_id?: number | null;
+  limited_traffic_enabled?: boolean;
+  limited_traffic_limit_gb?: number;
+  limited_traffic_used_gb?: number;
+  limited_traffic_purchased_gb?: number;
+  limited_squad_active?: boolean;
 }
 
 export interface UserPromoGroupInfo {
@@ -361,6 +366,8 @@ export interface UpdateSubscriptionRequest {
     | 'add_traffic'
     | 'add_limited_traffic'
     | 'sync_limited_companion'
+    | 'add_limited_squad_traffic'
+    | 'remove_limited_squad_traffic'
     | 'remove_traffic'
     | 'set_device_limit'
     | 'shorten';
