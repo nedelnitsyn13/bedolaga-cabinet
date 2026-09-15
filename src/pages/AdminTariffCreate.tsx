@@ -242,16 +242,23 @@ export default function AdminTariffCreate() {
     }
   };
 
+  // Сервер не может одновременно быть в MAIN-списке (безусловный доступ) и в
+  // LIMITED-пуле — иначе он остаётся в activeInternalSquads даже когда
+  // LIMITED squad снимается за перелимит, и общий лимит для этого сервера
+  // ничего не значит. Переключение в одном списке всегда убирает сервер из
+  // другого.
   const toggleServer = (uuid: string) => {
     setSelectedSquads((prev) =>
       prev.includes(uuid) ? prev.filter((s) => s !== uuid) : [...prev, uuid],
     );
+    setLimitedSquadUuids((prev) => prev.filter((s) => s !== uuid));
   };
 
   const toggleLimitedSquadMember = (uuid: string) => {
     setLimitedSquadUuids((prev) =>
       prev.includes(uuid) ? prev.filter((s) => s !== uuid) : [...prev, uuid],
     );
+    setSelectedSquads((prev) => prev.filter((s) => s !== uuid));
   };
 
   const updateServerTrafficLimit = (uuid: string, value: string) => {
@@ -973,6 +980,9 @@ export default function AdminTariffCreate() {
               </h4>
               <button
                 type="button"
+                role="switch"
+                aria-checked={limitedTrafficEnabled}
+                aria-label={t('admin.tariffs.limitedSquadTitle', 'LIMITED squad')}
                 onClick={() => setLimitedTrafficEnabled((prev) => !prev)}
                 className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
                   limitedTrafficEnabled ? 'bg-accent-500' : 'bg-dark-600'
@@ -988,7 +998,7 @@ export default function AdminTariffCreate() {
             <p className="text-sm text-dark-400">
               {t(
                 'admin.tariffs.limitedSquadHint',
-                'Общий лимит трафика делится на все выбранные ниже сервера вместе (не по отдельности на каждый). Это не то же самое, что «Серверы» выше — те безлимитны.',
+                'Общий лимит трафика делится на все выбранные ниже сервера вместе (не по отдельности на каждый). Это не то же самое, что «Серверы» выше — те не входят в общий LIMITED-пул.',
               )}
             </p>
             {limitedTrafficEnabled && (
