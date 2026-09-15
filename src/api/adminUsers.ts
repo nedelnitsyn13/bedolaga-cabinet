@@ -27,11 +27,11 @@ export interface UserSubscriptionInfo {
   days_remaining: number;
   purchased_traffic_gb: number;
   traffic_purchases: TrafficPurchaseInfo[];
-  has_limited_companion: boolean;
-  limited_companion_traffic_limit_gb: number;
-  limited_companion_traffic_used_gb: number;
-  limited_companion_purchased_traffic_gb: number;
-  limited_companion_panel_id: number | null;
+  has_limited_companion?: boolean;
+  limited_companion_traffic_limit_gb?: number;
+  limited_companion_traffic_used_gb?: number;
+  limited_companion_purchased_traffic_gb?: number;
+  limited_companion_panel_id?: number | null;
 }
 
 export interface UserPromoGroupInfo {
