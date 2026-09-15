@@ -55,6 +55,11 @@ export default function AdminTariffCreate() {
   // Свой лимит трафика (ГБ) на сервер этого тарифа — по squad_uuid. Пусто/0 = общий
   // лимит тарифа (traffic_limit_gb), как и на телеграм-редакторе тарифа в боте.
   const [serverTrafficLimits, setServerTrafficLimits] = useState<Record<string, number | ''>>({});
+  // LIMITED squad (новая архитектура, параллельно limited-компаньону): общий
+  // лимит трафика на пул серверов на основном панельном аккаунте.
+  const [limitedTrafficEnabled, setLimitedTrafficEnabled] = useState(false);
+  const [limitedSquadUuids, setLimitedSquadUuids] = useState<string[]>([]);
+  const [limitedBaseTrafficGb, setLimitedBaseTrafficGb] = useState<number | ''>(0);
   const [selectedExternalSquad, setSelectedExternalSquad] = useState<string | null>(null);
   const [selectedPromoGroups, setSelectedPromoGroups] = useState<number[]>([]);
   const [dailyPriceKopeks, setDailyPriceKopeks] = useState<number | ''>(0);
@@ -141,6 +146,9 @@ export default function AdminTariffCreate() {
           ]),
         ),
       );
+      setLimitedTrafficEnabled(data.limited_traffic_enabled ?? false);
+      setLimitedSquadUuids(data.limited_squad_uuids || []);
+      setLimitedBaseTrafficGb(data.limited_base_traffic_gb || 0);
       setSelectedExternalSquad(data.external_squad_uuid || null);
       setSelectedPromoGroups(
         data.promo_groups?.filter((pg) => pg.is_selected).map((pg) => pg.id) || [],
@@ -208,6 +216,9 @@ export default function AdminTariffCreate() {
           .filter(([, gb]) => toNumber(gb) > 0)
           .map(([uuid, gb]) => [uuid, { traffic_limit_gb: toNumber(gb) }]),
       ),
+      limited_traffic_enabled: limitedTrafficEnabled,
+      limited_squad_uuids: limitedSquadUuids,
+      limited_base_traffic_gb: toNumber(limitedBaseTrafficGb),
       external_squad_uuid: selectedExternalSquad || null,
       promo_group_ids: selectedPromoGroups,
       traffic_topup_enabled: trafficTopupEnabled,
@@ -233,6 +244,12 @@ export default function AdminTariffCreate() {
 
   const toggleServer = (uuid: string) => {
     setSelectedSquads((prev) =>
+      prev.includes(uuid) ? prev.filter((s) => s !== uuid) : [...prev, uuid],
+    );
+  };
+
+  const toggleLimitedSquadMember = (uuid: string) => {
+    setLimitedSquadUuids((prev) =>
       prev.includes(uuid) ? prev.filter((s) => s !== uuid) : [...prev, uuid],
     );
   };
@@ -945,6 +962,95 @@ export default function AdminTariffCreate() {
                   );
                 })}
               </div>
+            )}
+          </div>
+
+          {/* LIMITED squad (новая архитектура) */}
+          <div className="card space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-medium text-dark-200">
+                {t('admin.tariffs.limitedSquadTitle', 'LIMITED squad')}
+              </h4>
+              <button
+                type="button"
+                onClick={() => setLimitedTrafficEnabled((prev) => !prev)}
+                className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+                  limitedTrafficEnabled ? 'bg-accent-500' : 'bg-dark-600'
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+                    limitedTrafficEnabled ? 'translate-x-5' : 'translate-x-0.5'
+                  }`}
+                />
+              </button>
+            </div>
+            <p className="text-sm text-dark-400">
+              {t(
+                'admin.tariffs.limitedSquadHint',
+                'Общий лимит трафика делится на все выбранные ниже сервера вместе (не по отдельности на каждый). Это не то же самое, что «Серверы» выше — те безлимитны.',
+              )}
+            </p>
+            {limitedTrafficEnabled && (
+              <>
+                <div className="flex items-center gap-3">
+                  <span className="w-48 text-sm text-dark-400">
+                    {t('admin.tariffs.limitedBaseTrafficLabel', 'Базовый лимит пула')}
+                  </span>
+                  <input
+                    type="number"
+                    value={limitedBaseTrafficGb}
+                    onChange={createNumberInputHandler(setLimitedBaseTrafficGb, 0)}
+                    className="input h-9 w-24 px-2 text-sm"
+                    min={0}
+                    step={1}
+                  />
+                  <span className="text-xs text-dark-500">
+                    {t('admin.tariffs.serverTrafficLimitUnit')}
+                  </span>
+                </div>
+                {servers.length === 0 ? (
+                  <p className="py-4 text-center text-dark-500">
+                    {t('admin.tariffs.noServersAvailable')}
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {servers.map((server: ServerInfo) => {
+                      const isSelected = limitedSquadUuids.includes(server.squad_uuid);
+                      return (
+                        <button
+                          key={server.id}
+                          type="button"
+                          onClick={() => toggleLimitedSquadMember(server.squad_uuid)}
+                          className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors ${
+                            isSelected
+                              ? 'bg-accent-500/20 text-accent-300'
+                              : 'bg-dark-800 text-dark-300 hover:bg-dark-700'
+                          }`}
+                        >
+                          <div
+                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${
+                              isSelected ? 'bg-accent-500 text-on-accent' : 'bg-dark-600'
+                            }`}
+                          >
+                            {isSelected && <CheckIcon />}
+                          </div>
+                          <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                            <Twemoji options={{ className: 'twemoji', folder: 'svg', ext: '.svg' }}>
+                              {server.display_name}
+                            </Twemoji>
+                          </span>
+                          {server.country_code && (
+                            <span className="shrink-0 text-xs text-dark-500">
+                              {server.country_code}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

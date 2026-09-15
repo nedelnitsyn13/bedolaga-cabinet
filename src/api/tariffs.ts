@@ -78,6 +78,10 @@ export interface TariffDetail {
   is_highlighted?: boolean;
   allowed_squads: string[];
   server_traffic_limits: Record<string, ServerTrafficLimit>;
+  /** LIMITED squad (новая архитектура): общий лимит на пул серверов на основном аккаунте. */
+  limited_traffic_enabled: boolean;
+  limited_squad_uuids: string[];
+  limited_base_traffic_gb: number;
   servers: ServerInfo[];
   promo_groups: PromoGroupInfo[];
   subscriptions_count: number;
@@ -129,6 +133,10 @@ export interface TariffCreateRequest {
   is_highlighted?: boolean;
   allowed_squads?: string[];
   server_traffic_limits?: Record<string, ServerTrafficLimit>;
+  /** LIMITED squad (новая архитектура): общий лимит на пул серверов на основном аккаунте. */
+  limited_traffic_enabled?: boolean;
+  limited_squad_uuids?: string[];
+  limited_base_traffic_gb?: number;
   promo_group_ids?: number[];
   // Произвольное количество дней
   custom_days_enabled?: boolean;
@@ -183,6 +191,10 @@ export interface TariffUpdateRequest {
   is_highlighted?: boolean;
   allowed_squads?: string[];
   server_traffic_limits?: Record<string, ServerTrafficLimit>;
+  /** LIMITED squad (новая архитектура): общий лимит на пул серверов на основном аккаунте. */
+  limited_traffic_enabled?: boolean;
+  limited_squad_uuids?: string[];
+  limited_base_traffic_gb?: number;
   promo_group_ids?: number[];
   // Произвольное количество дней
   custom_days_enabled?: boolean;
