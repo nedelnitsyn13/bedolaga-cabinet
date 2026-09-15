@@ -42,7 +42,7 @@ export function LimitedTrafficTopupSheet({
 
   const formatPrice = (kopeks: number) => {
     const rubles = kopeks / 100;
-    return rubles % 1 === 0 ? `${rubles} ₽` : `${rubles.toFixed(2)} ₽`;
+    return rubles % 1 === 0 ? `${rubles} ₽` : `${rubles.toFixed(2)} ₽`;
   };
 
   const { data: trafficPackages } = useQuery({
