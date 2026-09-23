@@ -301,13 +301,6 @@ export default function Subscription() {
   });
   const limitedTraffic = limitedTrafficQuery.data;
 
-  // Состояние автооплаты спрашиваем, только когда она включена: иначе бэкенд
-  // отвечает 403, и браузер печатает красную строку с полным стеком на каждый
-  // такой запрос. Ждём ответа опций — до него неизвестно, включена ли фича.
-  const featureFlagsSettled = purchaseOptionsQuery.isSuccess || purchaseOptionsQuery.isError;
-  const sbpFeatureOff = isRecurringFeatureOff(purchaseOptions, 'platega_recurrent_enabled');
-  const lavaFeatureOff = isRecurringFeatureOff(purchaseOptions, 'lava_recurrent_enabled');
-
   const isTariffsMode = purchaseOptions?.sales_mode === 'tariffs';
 
   // Devices query
@@ -431,44 +424,6 @@ export default function Subscription() {
 
     refreshLimitedTrafficMutation.mutate();
   }, [limitedTraffic?.available, refreshLimitedTrafficMutation, subscriptionId]);
-
-  // Initialize revoke cooldown from localStorage on mount
-  useEffect(() => {
-    const ts = safeLocal.getItem(`revoke_ts_${subscriptionId ?? 'default'}`);
-    if (ts) {
-      const elapsed = Math.floor((Date.now() - parseInt(ts, 10)) / 1000);
-      const remaining = Math.max(0, 900 - elapsed);
-      setRevokeCooldown(remaining);
-    }
-  }, [subscriptionId]);
-
-  // Countdown timer for revoke cooldown
-  useEffect(() => {
-    if (revokeCooldown <= 0) return;
-    const timer = setInterval(() => {
-      setRevokeCooldown((prev) => Math.max(0, prev - 1));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [revokeCooldown]);
-
-  // Revoke (reissue) subscription mutation
-  const revokeMutation = useMutation({
-    mutationFn: () => subscriptionApi.revokeSubscription(subscriptionId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['subscription'] });
-      queryClient.invalidateQueries({ queryKey: ['connection-link', subscriptionId] });
-      queryClient.invalidateQueries({ queryKey: ['subscriptions-list'] });
-      // Remnawave resets device HWIDs on revoke — make sure the cabinet
-      // re-reads the now-empty device list instead of showing the stale cache.
-      queryClient.invalidateQueries({ queryKey: ['devices', subscriptionId] });
-      haptic.notification('success');
-      safeLocal.setItem(`revoke_ts_${subscriptionId ?? 'default'}`, Date.now().toString());
-      setRevokeCooldown(900);
-    },
-    onError: () => {
-      haptic.notification('error');
-    },
-  });
 
   // Auto-refresh traffic on mount (with 30s caching)
   useEffect(() => {
