@@ -18,7 +18,7 @@ import {
 import { usePlatform } from '../platform/hooks/usePlatform';
 import { formatUptime } from '../utils/format';
 import { getFlagEmoji } from '../utils/subscriptionHelpers';
-import Twemoji from 'react-twemoji';
+import Twemoji from '@/lib/twemoji';
 import { StatCard } from '../components/stats';
 import {
   ServerIcon,
