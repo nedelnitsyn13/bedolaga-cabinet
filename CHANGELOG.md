@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.80.1](https://github.com/BEDOLAGA-DEV/bedolaga-cabinet/compare/v1.80.0...v1.80.1) (2026-09-29)
+
+
+### Bug Fixes
+
+* **deps:** tiptap 3.31.3 — закрыты уязвимости редактора новостей и инфо-страниц ([589ef56](https://github.com/BEDOLAGA-DEV/bedolaga-cabinet/commit/589ef566089be0e9fa595e3e9df00f3fa220d341))
+
+
+### Performance Improvements
+
+* **build:** сборка на vite 8 — стартовая загрузка кабинета 390 KB gzip вместо 409 KB ([589ef56](https://github.com/BEDOLAGA-DEV/bedolaga-cabinet/commit/589ef566089be0e9fa595e3e9df00f3fa220d341))
+
 ## [1.80.0](https://github.com/BEDOLAGA-DEV/bedolaga-cabinet/compare/v1.79.0...v1.80.0) (2026-09-29)
 
 
