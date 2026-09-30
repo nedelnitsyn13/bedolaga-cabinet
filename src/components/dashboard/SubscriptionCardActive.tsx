@@ -1,6 +1,7 @@
 import { uiLocale } from '@/utils/uiLocale';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import type { UseMutationResult } from '@tanstack/react-query';
 import TrafficProgressBar from './TrafficProgressBar';
 import Sparkline from './Sparkline';
@@ -11,6 +12,7 @@ import { useTrafficZone } from '../../hooks/useTrafficZone';
 import { formatTraffic } from '../../utils/formatTraffic';
 import { getGlassColors } from '../../utils/glassTheme';
 import { CalendarIcon, RefreshIcon, SparklesIcon } from '@/components/icons';
+import { subscriptionApi } from '../../api/subscription';
 import type { Subscription } from '../../types';
 
 interface SubscriptionCardActiveProps {
@@ -47,6 +49,14 @@ export default function SubscriptionCardActive({
 
   // Sparkline placeholder data (hidden until API provides daily usage)
   const dailyUsage: number[] = [];
+
+  // Трафик лимитного сервера-компаньона — отдельный пул, есть не у всех
+  // подписок (available: false, если компаньон не привязан).
+  const { data: limitedTraffic } = useQuery({
+    queryKey: ['limited-traffic', subscription.id],
+    queryFn: () => subscriptionApi.getLimitedTraffic(subscription.id),
+    staleTime: 60_000,
+  });
 
   return (
     <div
@@ -219,6 +229,33 @@ export default function SubscriptionCardActive({
           </div>
         </div>
       </div>
+
+      {/* ─── Limited Companion Server Traffic ─── */}
+      {limitedTraffic?.available && (
+        <div
+          className="mb-5 rounded-[14px] p-3.5"
+          style={{ background: g.innerBg, border: `1px solid ${g.innerBorder}` }}
+        >
+          <div className="mb-2 flex items-center justify-between">
+            <span
+              className="text-[10px] font-semibold uppercase tracking-wider"
+              style={{ color: g.textFaint }}
+            >
+              {t('subscription.limitedServerTraffic')}
+            </span>
+            <span className="font-mono text-[11px] text-dark-400">
+              {`${formatTraffic(limitedTraffic.used_gb)} / ${formatTraffic(limitedTraffic.total_limit_gb)}`}
+            </span>
+          </div>
+          <TrafficProgressBar
+            usedGb={limitedTraffic.used_gb}
+            limitGb={limitedTraffic.total_limit_gb}
+            percent={limitedTraffic.used_percent}
+            isUnlimited={false}
+            compact
+          />
+        </div>
+      )}
 
       {/* ─── Traffic Refresh ─── */}
       <div className="mb-5 flex items-center justify-between px-0.5">
