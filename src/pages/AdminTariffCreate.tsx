@@ -998,8 +998,8 @@ export default function AdminTariffCreate() {
                 }`}
               >
                 <span
-                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
-                    limitedTrafficEnabled ? 'translate-x-5' : 'translate-x-0.5'
+                  className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
+                    limitedTrafficEnabled ? 'translate-x-5' : 'translate-x-0'
                   }`}
                 />
               </button>
