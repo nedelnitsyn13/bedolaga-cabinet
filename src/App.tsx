@@ -49,6 +49,7 @@ import TelegramCallback from './pages/TelegramCallback';
 import TelegramRedirect from './pages/TelegramRedirect';
 import DeepLinkRedirect from './pages/DeepLinkRedirect';
 import VerifyEmail from './pages/VerifyEmail';
+import ConfirmEmail from './pages/ConfirmEmail';
 import ResetPassword from './pages/ResetPassword';
 import PublicLegal from './pages/PublicLegal';
 import OAuthCallback from './pages/OAuthCallback';
@@ -304,6 +305,7 @@ function App() {
         <Route path="/add" element={<DeepLinkRedirect />} />
         <Route path="/auth/oauth/callback" element={<OAuthCallback />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/confirm-email" element={<ConfirmEmail />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/offer" element={<PublicLegal doc="offer" />} />
         <Route path="/privacy" element={<PublicLegal doc="privacy" />} />

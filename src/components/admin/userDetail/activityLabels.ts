@@ -71,6 +71,7 @@ const SCREEN_PREFIXES: Array<[string, string]> = [
   ['/auth', 'login'],
   ['/auto-login', 'login'],
   ['/verify-email', 'verifyEmail'],
+  ['/confirm-email', 'verifyEmail'],
   ['/reset-password', 'resetPassword'],
 ];
 

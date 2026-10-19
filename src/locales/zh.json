@@ -278,6 +278,18 @@
     "failed": "验证失败",
     "goToLogin": "前往登录"
   },
+  "emailConfirmation": {
+    "confirming": "正在确认邮箱...",
+    "success": "邮箱已确认",
+    "successMessage": "{{email}} 已确认。现在请按常规方式登录您的账户。",
+    "failed": "无法确认邮箱",
+    "noToken": "链接中没有确认码。",
+    "expired": "链接已过期。",
+    "invalid": "链接无效或已被使用。",
+    "tryLater": "请稍后再次打开链接。",
+    "askSupport": "如果邮箱仍未确认，请联系客服，我们会发送新的链接。",
+    "goToLogin": "前往登录"
+  },
   "dashboard": {
     "title": "个人中心",
     "welcome": "欢迎，{{name}}！",
@@ -3992,7 +4004,8 @@
             "payments": "支付",
             "subscription": "订阅",
             "actions": "操作",
-            "logins": "登录"
+            "logins": "登录",
+            "emails": "邮件"
           },
           "fromBalance": "余额支付",
           "loadError": "无法加载动态"
@@ -4125,7 +4138,64 @@
           }
         },
         "messages_other": "{{count}} 条消息",
-        "ticketLoadError": "无法打开工单"
+        "ticketLoadError": "无法打开工单",
+        "email": {
+          "title": "邮箱",
+          "log": "邮件",
+          "logShort": "邮件",
+          "address": "地址",
+          "none": "未设置",
+          "state": "状态",
+          "verified": "已确认",
+          "unverified": "等待确认",
+          "set": "设置邮箱",
+          "change": "更改",
+          "resend": "重新发送链接",
+          "delete": "删除邮箱",
+          "newAddress": "新地址",
+          "hint": "确认链接将发送到此地址。在对方打开链接之前，邮箱处于未确认状态。该链接仅确认地址，不会登录账户。",
+          "saveAndSend": "保存并发送链接",
+          "linkSent": "确认链接已发送至 {{email}}",
+          "linkNotSent": "邮箱已保存，但邮件未发送 — 详情见「邮件」",
+          "confirmDelete": "从账户中删除 {{email}}？将无法再用它登录，也不会再向其发送邮件。",
+          "deleted": "邮箱已删除"
+        },
+        "emailLog": {
+          "empty": "暂无邮件。",
+          "loadError": "无法加载邮件。",
+          "retention": "日志保存最近 {{days}} 天的邮件，不保存邮件正文。",
+          "more": "显示更多",
+          "status": {
+            "sent": "已发送",
+            "queued": "重试中",
+            "failed": "未发送"
+          },
+          "types": {
+            "email_verification": "邮箱验证",
+            "email_admin_set": "邮箱确认（管理员）",
+            "password_reset": "重置密码",
+            "email_change_code": "更换邮箱验证码",
+            "broadcast": "群发",
+            "promo_offer": "促销优惠",
+            "test": "测试邮件",
+            "api_notification": "API 通知",
+            "nalogo_receipt": "收据",
+            "ticket_reply": "客服回复",
+            "payment_received": "已收到付款",
+            "balance_topup": "余额充值",
+            "subscription_activated": "订阅已激活",
+            "subscription_expiring": "订阅即将到期",
+            "subscription_expired": "订阅已到期",
+            "subscription_renewed": "订阅已续期",
+            "autopay_success": "自动付款",
+            "autopay_failed": "自动付款失败",
+            "guest_subscription_delivered": "免注册购买",
+            "guest_cabinet_credentials": "个人中心访问",
+            "guest_gift_received": "礼物",
+            "guest_gift_link_buyer": "礼物链接",
+            "other": "其他"
+          }
+        }
       },
       "notFound": "未找到用户",
       "sendMessage": {
@@ -4300,7 +4370,16 @@
         "promoGroupNotFound": "未找到推广分组",
         "subscriptionNotFound": "未找到订阅",
         "userNotFound": "未找到用户",
-        "trialBlockedBySubscription": "试用仍不可用：该用户还有其他订阅，请先删除。"
+        "trialBlockedBySubscription": "试用仍不可用：该用户还有其他订阅，请先删除。",
+        "emailTaken": "此地址已绑定到其他账户。",
+        "emailDisposable": "不接受一次性邮箱地址。",
+        "emailForbidden": "此地址不能绑定到用户账户。",
+        "emailMailOff": "邮件服务器未配置，无法发送邮件。",
+        "emailCabinetUrl": "未设置个人中心地址（CABINET_URL），无法生成确认链接。",
+        "emailSameVerified": "此地址已设置并已确认。",
+        "emailAlreadyVerified": "邮箱已确认。",
+        "emailNone": "该用户没有邮箱。",
+        "emailOnlyLogin": "邮箱是该账户唯一的登录方式，无法删除。"
       },
       "moreTariffs": "另有 {{count}} 个"
     },

@@ -283,6 +283,18 @@
     "failed": "تایید ناموفق",
     "goToLogin": "رفتن به صفحه ورود"
   },
+  "emailConfirmation": {
+    "confirming": "در حال تایید ایمیل...",
+    "success": "ایمیل تایید شد",
+    "successMessage": "آدرس {{email}} تایید شد. اکنون به روش معمول وارد حساب خود شوید.",
+    "failed": "تایید ایمیل ممکن نشد",
+    "noToken": "لینک کد تایید ندارد.",
+    "expired": "اعتبار لینک تمام شده است.",
+    "invalid": "لینک نامعتبر است یا قبلاً استفاده شده است.",
+    "tryLater": "لطفاً کمی بعد دوباره لینک را باز کنید.",
+    "askSupport": "اگر ایمیل هنوز تایید نشده است، با پشتیبانی تماس بگیرید تا لینک جدید ارسال شود.",
+    "goToLogin": "رفتن به ورود"
+  },
   "dashboard": {
     "title": "داشبورد",
     "welcome": "خوش آمدید، {{name}}!",
@@ -4003,7 +4015,8 @@
             "payments": "پرداخت‌ها",
             "subscription": "اشتراک",
             "actions": "اقدامات",
-            "logins": "ورودها"
+            "logins": "ورودها",
+            "emails": "ایمیل‌ها"
           },
           "fromBalance": "از موجودی",
           "loadError": "بارگیری فعالیت ممکن نشد"
@@ -4143,7 +4156,64 @@
         },
         "messages_one": "{{count}} پیام",
         "messages_other": "{{count}} پیام",
-        "ticketLoadError": "باز کردن تیکت ممکن نشد"
+        "ticketLoadError": "باز کردن تیکت ممکن نشد",
+        "email": {
+          "title": "ایمیل",
+          "log": "ایمیل‌ها",
+          "logShort": "ایمیل‌ها",
+          "address": "آدرس",
+          "none": "ثبت نشده",
+          "state": "وضعیت",
+          "verified": "تایید شده",
+          "unverified": "در انتظار تایید",
+          "set": "ثبت ایمیل",
+          "change": "تغییر",
+          "resend": "ارسال دوباره لینک",
+          "delete": "حذف ایمیل",
+          "newAddress": "آدرس جدید",
+          "hint": "لینک تایید به این آدرس ارسال می‌شود. تا زمانی که کاربر آن را باز نکند، ایمیل تایید نشده می‌ماند. لینک فقط آدرس را تایید می‌کند و وارد حساب نمی‌شود.",
+          "saveAndSend": "ذخیره و ارسال لینک",
+          "linkSent": "لینک تایید به {{email}} ارسال شد",
+          "linkNotSent": "ایمیل ذخیره شد، اما نامه ارسال نشد — جزئیات در بخش «ایمیل‌ها»",
+          "confirmDelete": "ایمیل {{email}} از حساب حذف شود؟ ورود با آن و ارسال نامه به آن متوقف می‌شود.",
+          "deleted": "ایمیل حذف شد"
+        },
+        "emailLog": {
+          "empty": "هنوز ایمیلی ارسال نشده است.",
+          "loadError": "بارگیری ایمیل‌ها ممکن نشد.",
+          "retention": "گزارش، ایمیل‌های {{days}} روز اخیر را نگه می‌دارد. متن نامه‌ها ذخیره نمی‌شود.",
+          "more": "نمایش بیشتر",
+          "status": {
+            "sent": "ارسال شد",
+            "queued": "تلاش دوباره",
+            "failed": "ارسال نشد"
+          },
+          "types": {
+            "email_verification": "تایید ایمیل",
+            "email_admin_set": "تایید ایمیل (مدیر)",
+            "password_reset": "بازنشانی رمز عبور",
+            "email_change_code": "کد تغییر ایمیل",
+            "broadcast": "ارسال گروهی",
+            "promo_offer": "پیشنهاد تبلیغاتی",
+            "test": "ایمیل آزمایشی",
+            "api_notification": "اعلان API",
+            "nalogo_receipt": "رسید",
+            "ticket_reply": "پاسخ پشتیبانی",
+            "payment_received": "پرداخت دریافت شد",
+            "balance_topup": "شارژ موجودی",
+            "subscription_activated": "اشتراک فعال شد",
+            "subscription_expiring": "اشتراک رو به پایان",
+            "subscription_expired": "اشتراک تمام شد",
+            "subscription_renewed": "اشتراک تمدید شد",
+            "autopay_success": "پرداخت خودکار",
+            "autopay_failed": "پرداخت خودکار ناموفق",
+            "guest_subscription_delivered": "خرید بدون ثبت‌نام",
+            "guest_cabinet_credentials": "دسترسی به پنل",
+            "guest_gift_received": "هدیه",
+            "guest_gift_link_buyer": "لینک هدیه",
+            "other": "سایر"
+          }
+        }
       },
       "notFound": "کاربر یافت نشد",
       "sendMessage": {
@@ -4325,7 +4395,16 @@
         "promoGroupNotFound": "گروه تبلیغاتی پیدا نشد",
         "subscriptionNotFound": "اشتراک پیدا نشد",
         "userNotFound": "کاربر پیدا نشد",
-        "trialBlockedBySubscription": "دوره آزمایشی همچنان در دسترس نیست: این کاربر اشتراک دیگری دارد. ابتدا آن را حذف کنید."
+        "trialBlockedBySubscription": "دوره آزمایشی همچنان در دسترس نیست: این کاربر اشتراک دیگری دارد. ابتدا آن را حذف کنید.",
+        "emailTaken": "این آدرس به حساب دیگری متصل است.",
+        "emailDisposable": "آدرس‌های ایمیل یک‌بار مصرف پذیرفته نمی‌شوند.",
+        "emailForbidden": "این آدرس را نمی‌توان به حساب کاربر متصل کرد.",
+        "emailMailOff": "سرور ایمیل پیکربندی نشده است — ارسال نامه ممکن نیست.",
+        "emailCabinetUrl": "آدرس پنل (CABINET_URL) تنظیم نشده است — ساخت لینک تایید ممکن نیست.",
+        "emailSameVerified": "این آدرس قبلاً ثبت و تایید شده است.",
+        "emailAlreadyVerified": "ایمیل قبلاً تایید شده است.",
+        "emailNone": "کاربر ایمیل ندارد.",
+        "emailOnlyLogin": "ایمیل تنها راه ورود به این حساب است و نمی‌توان آن را حذف کرد."
       },
       "moreTariffs": "{{count}} مورد دیگر"
     },

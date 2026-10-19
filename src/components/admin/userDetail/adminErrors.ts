@@ -60,6 +60,16 @@ const RULES: Rule[] = [
   { pattern: /^Promo group not found/, key: 'promoGroupNotFound' },
   { pattern: /^Subscription not found/, key: 'subscriptionNotFound' },
   { pattern: /^(User|Referrer user|Referral user) not found/, key: 'userNotFound' },
+  // Почта пользователя (указать / удалить / отправить ссылку ещё раз)
+  { pattern: /^This email is already registered/, key: 'emailTaken' },
+  { pattern: /^Disposable email addresses are not allowed/, key: 'emailDisposable' },
+  { pattern: /cannot be linked to a user account/, key: 'emailForbidden' },
+  { pattern: /^Email service is not configured/, key: 'emailMailOff' },
+  { pattern: /^CABINET_URL is not configured/, key: 'emailCabinetUrl' },
+  { pattern: /^Email is already set and verified/, key: 'emailSameVerified' },
+  { pattern: /^Email is already verified/, key: 'emailAlreadyVerified' },
+  { pattern: /^User has no email/, key: 'emailNone' },
+  { pattern: /only login method/, key: 'emailOnlyLogin' },
 ];
 
 const CYRILLIC = /[а-яё]/i;

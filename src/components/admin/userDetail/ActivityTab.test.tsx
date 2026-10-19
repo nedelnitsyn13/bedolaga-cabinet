@@ -91,7 +91,13 @@ function Hub({
   onViewChange?: (v: ActivityView) => void;
 }) {
   return (
-    <ActivityHub userId={7} view={view} onViewChange={onViewChange} onNavigateToUser={() => {}} />
+    <ActivityHub
+      userId={7}
+      view={view}
+      onViewChange={onViewChange}
+      onNavigateToUser={() => {}}
+      currentEmail={null}
+    />
   );
 }
 

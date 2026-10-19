@@ -33,6 +33,22 @@ describe('adminErrorText', () => {
     expect(adminErrorText('User not found', t, money)).toBe('admin.users.errors.userNotFound');
   });
 
+  it('отказы по почте пользователя — словами', () => {
+    expect(adminErrorText('This email is already registered', t, money)).toBe(
+      'admin.users.errors.emailTaken',
+    );
+    expect(adminErrorText('Email is the only login method for this account', t, money)).toBe(
+      'admin.users.errors.emailOnlyLogin',
+    );
+    expect(adminErrorText('This email address cannot be linked to a user account.', t, money)).toBe(
+      'admin.users.errors.emailForbidden',
+    );
+    expect(adminErrorText('Email service is not configured', t, money)).toBe(
+      'admin.users.errors.emailMailOff',
+    );
+    expect(adminErrorText('User has no email', t, money)).toBe('admin.users.errors.emailNone');
+  });
+
   it('русский текст бота — как есть', () => {
     expect(adminErrorText('Ошибка удаления устройства', t, money)).toBe(
       'Ошибка удаления устройства',

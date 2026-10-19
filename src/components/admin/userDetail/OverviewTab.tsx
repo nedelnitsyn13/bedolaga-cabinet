@@ -19,6 +19,7 @@ import { formatGb } from '@/utils/formatNumber';
 import { isConnectedNow, relativeTimeParts } from '@/utils/relativeTime';
 import { ActivityRows } from './ActivityRows';
 import { type DeviceRow, deviceLongName } from './DevicesCard';
+import { EmailSection } from './EmailSection';
 import { PromoGroupEditor, RestrictionsEditor } from './OverviewEditors';
 import { KeyValues, LinkAction, Section } from './sectionParts';
 
@@ -32,11 +33,13 @@ export interface OverviewTabProps {
   tickets: AdminTicket[] | null;
   gifts: AdminUserGiftsResponse | null;
   recentActivity: UserActivityItem[] | null;
-  can: { promoGroup: boolean; restrictions: boolean };
+  can: { promoGroup: boolean; restrictions: boolean; email: boolean };
   busy: boolean;
   onChangePromoGroup: (groupId: number | null) => Promise<boolean>;
   onUpdateRestrictions: (request: UpdateRestrictionsRequest) => Promise<boolean>;
   onGoTo: (tab: DetailTab, view?: string) => void;
+  /** Перечитать карточку: после смены почты. */
+  onUserRefresh: () => Promise<unknown> | unknown;
 }
 
 const BYTES_IN_GB = 1024 ** 3;
@@ -82,8 +85,16 @@ export function OverviewTab(props: OverviewTabProps) {
         <SupportFacts {...props} editor={editor} onEditor={setEditor} />
       </Section>
 
+      <EmailSection
+        className="lg:col-start-1"
+        user={props.user}
+        canEdit={props.can.email}
+        onChanged={props.onUserRefresh}
+        onShowLog={() => onGoTo('activity', 'emails')}
+      />
+
       <Section
-        className="lg:col-start-2 lg:row-span-3 lg:row-start-1"
+        className="lg:col-start-2 lg:row-span-4 lg:row-start-1"
         icon={<ClockIcon className="h-5 w-5" />}
         title={t(`${ns}.recent`)}
         action={

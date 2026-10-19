@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { adminUsersApi } from '@/api/adminUsers';
 import { ClockIcon } from '@/components/icons';
 import { ActivityTab } from './ActivityTab';
+import { EmailLogTab } from './EmailLogTab';
 import { GiftsTab } from './GiftsTab';
 import { Segmented } from '@/components/admin/Segmented';
 import { TicketsTab } from './TicketsTab';
@@ -21,7 +22,7 @@ const FEED_TYPES = {
   logins: 'cabinet_login',
 } as const;
 
-export type ActivityView = keyof typeof FEED_TYPES | 'tickets' | 'gifts';
+export type ActivityView = keyof typeof FEED_TYPES | 'tickets' | 'gifts' | 'emails';
 export const ACTIVITY_VIEWS: readonly ActivityView[] = [
   'all',
   'payments',
@@ -30,6 +31,7 @@ export const ACTIVITY_VIEWS: readonly ActivityView[] = [
   'logins',
   'tickets',
   'gifts',
+  'emails',
 ];
 
 /** Старые ссылки `?view=timeline` ведут в «Всё». */
@@ -45,9 +47,17 @@ interface ActivityHubProps {
   view: ActivityView;
   onViewChange: (view: ActivityView) => void;
   onNavigateToUser: (userId: number) => void;
+  /** Текущая почта: в журнале писем адрес показывается, только если письмо ушло на другой. */
+  currentEmail: string | null;
 }
 
-export function ActivityHub({ userId, view, onViewChange, onNavigateToUser }: ActivityHubProps) {
+export function ActivityHub({
+  userId,
+  view,
+  onViewChange,
+  onNavigateToUser,
+  currentEmail,
+}: ActivityHubProps) {
   const { t } = useTranslation();
   const ns = 'admin.users.detail.activity';
   const giftsQuery = useQuery({
@@ -69,6 +79,8 @@ export function ActivityHub({ userId, view, onViewChange, onNavigateToUser }: Ac
       {filter}
       {view === 'tickets' ? (
         <TicketsTab userId={userId} />
+      ) : view === 'emails' ? (
+        <EmailLogTab userId={userId} currentEmail={currentEmail} />
       ) : view === 'gifts' ? (
         <GiftsTab
           giftsLoading={giftsQuery.isFetching && !giftsQuery.data}

@@ -139,6 +139,15 @@ export const authApi = {
     return response.data;
   },
 
+  /**
+   * Подтвердить почту, которую указал администратор. В аккаунт не входит: адрес
+   * вводил не владелец, и при опечатке ссылку получил бы посторонний.
+   */
+  confirmAdminSetEmail: async (token: string): Promise<{ success: boolean; email: string }> => {
+    const response = await apiClient.post('/cabinet/auth/email/confirm', { token });
+    return response.data;
+  },
+
   resendVerification: async (): Promise<{ message: string }> => {
     const response = await apiClient.post('/cabinet/auth/email/resend');
     return response.data;
