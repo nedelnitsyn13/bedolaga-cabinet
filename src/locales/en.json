@@ -289,6 +289,18 @@
     "failed": "Verification Failed",
     "goToLogin": "Go to Login"
   },
+  "emailConfirmation": {
+    "confirming": "Confirming your email...",
+    "success": "Email confirmed",
+    "successMessage": "{{email}} is confirmed. Now sign in to your account as usual.",
+    "failed": "Could not confirm the email",
+    "noToken": "The link has no confirmation code.",
+    "expired": "The link has expired.",
+    "invalid": "The link is invalid or has already been used.",
+    "tryLater": "Please try opening the link again a bit later.",
+    "askSupport": "If your email is still not confirmed, contact support and we will send a new link.",
+    "goToLogin": "Go to sign in"
+  },
   "resetPassword": {
     "title": "Set new password",
     "enterNewPassword": "Enter your new password below.",
@@ -5162,7 +5174,8 @@
             "payments": "Payments",
             "subscription": "Subscription",
             "actions": "Actions",
-            "logins": "Logins"
+            "logins": "Logins",
+            "emails": "Emails"
           },
           "fromBalance": "from balance",
           "loadError": "Could not load activity"
@@ -5302,7 +5315,64 @@
         },
         "messages_one": "{{count}} message",
         "messages_other": "{{count}} messages",
-        "ticketLoadError": "Could not open the ticket"
+        "ticketLoadError": "Could not open the ticket",
+        "email": {
+          "title": "Email",
+          "log": "Emails",
+          "logShort": "Emails",
+          "address": "Address",
+          "none": "not set",
+          "state": "Status",
+          "verified": "verified",
+          "unverified": "awaiting confirmation",
+          "set": "Set email",
+          "change": "Change",
+          "resend": "Resend link",
+          "delete": "Remove email",
+          "newAddress": "New address",
+          "hint": "A confirmation link will be sent to this address. The email stays unverified until the person opens it. The link only confirms the address and does not sign in.",
+          "saveAndSend": "Save and send link",
+          "linkSent": "Confirmation link sent to {{email}}",
+          "linkNotSent": "The email was saved, but the letter was not sent — see «Emails» for details",
+          "confirmDelete": "Remove {{email}} from the account? Sign-in with it and letters to it will stop.",
+          "deleted": "Email removed"
+        },
+        "emailLog": {
+          "empty": "No emails yet.",
+          "loadError": "Could not load emails.",
+          "retention": "The log keeps emails for the last {{days}} days. Letter text is not stored.",
+          "more": "Show more",
+          "status": {
+            "sent": "Sent",
+            "queued": "Retrying",
+            "failed": "Not sent"
+          },
+          "types": {
+            "email_verification": "Email verification",
+            "email_admin_set": "Email confirmation (admin)",
+            "password_reset": "Password reset",
+            "email_change_code": "Email change code",
+            "broadcast": "Broadcast",
+            "promo_offer": "Promo offer",
+            "test": "Test email",
+            "api_notification": "API notification",
+            "nalogo_receipt": "Receipt",
+            "ticket_reply": "Support reply",
+            "payment_received": "Payment received",
+            "balance_topup": "Balance top-up",
+            "subscription_activated": "Subscription activated",
+            "subscription_expiring": "Subscription expiring",
+            "subscription_expired": "Subscription expired",
+            "subscription_renewed": "Subscription renewed",
+            "autopay_success": "Autopay",
+            "autopay_failed": "Autopay failed",
+            "guest_subscription_delivered": "Guest purchase",
+            "guest_cabinet_credentials": "Cabinet access",
+            "guest_gift_received": "Gift",
+            "guest_gift_link_buyer": "Gift link",
+            "other": "Other"
+          }
+        }
       },
       "notFound": "User not found",
       "summary": {
@@ -5459,7 +5529,16 @@
         "promoGroupNotFound": "Promo group not found",
         "subscriptionNotFound": "Subscription not found",
         "userNotFound": "User not found",
-        "trialBlockedBySubscription": "The trial is still unavailable: this person has another subscription. Remove it first."
+        "trialBlockedBySubscription": "The trial is still unavailable: this person has another subscription. Remove it first.",
+        "emailTaken": "This address is already linked to another account.",
+        "emailDisposable": "Disposable email addresses are not accepted.",
+        "emailForbidden": "This address cannot be linked to a user account.",
+        "emailMailOff": "The mail server is not configured — the letter cannot be sent.",
+        "emailCabinetUrl": "The cabinet address (CABINET_URL) is not set — the confirmation link cannot be built.",
+        "emailSameVerified": "This address is already set and verified.",
+        "emailAlreadyVerified": "The email is already verified.",
+        "emailNone": "The user has no email.",
+        "emailOnlyLogin": "Email is the only way to sign in to this account, so it cannot be removed."
       },
       "moreTariffs": "{{count}} more"
     },

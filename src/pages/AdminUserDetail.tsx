@@ -146,6 +146,7 @@ export default function AdminUserDetail() {
     referral: hasPermission('users:referral'),
     devices: hasPermission('users:edit'),
     deactivateOffer: hasPermission('promocodes:edit'),
+    email: hasPermission('users:edit'),
   };
   const devices = data.devicesQuery.data?.devices ?? null;
   // В шапке — только «Написать» и «⋯». «Продлить» / «Выдать» живут у самой подписки во
@@ -256,11 +257,12 @@ export default function AdminUserDetail() {
           tickets={data.tickets}
           gifts={data.gifts}
           recentActivity={data.recentActivity}
-          can={{ promoGroup: can.promoGroup, restrictions: can.restrictions }}
+          can={{ promoGroup: can.promoGroup, restrictions: can.restrictions, email: can.email }}
           busy={actions.busy}
           onChangePromoGroup={actions.changePromoGroup}
           onUpdateRestrictions={actions.updateRestrictions}
           onGoTo={goTo}
+          onUserRefresh={() => userQuery.refetch()}
         />
       )}
 
@@ -312,6 +314,7 @@ export default function AdminUserDetail() {
           view={activityView}
           onViewChange={(view: ActivityView) => goTo('activity', view === 'all' ? undefined : view)}
           onNavigateToUser={(targetId) => navigate(`/admin/users/${targetId}`)}
+          currentEmail={user.email ?? null}
         />
       )}
 
