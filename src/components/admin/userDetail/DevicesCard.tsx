@@ -4,6 +4,8 @@ import { CheckIcon, DevicesIcon, EditIcon, XIcon } from '@/components/icons';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { useDestructiveConfirm } from '@/platform/hooks/useNativeDialog';
 import { formatShortDate } from '@/utils/format';
+import { relativeTimeParts } from '@/utils/relativeTime';
+import { relativeLabel } from '../users/RelativeTime';
 import { DEVICE_ALIAS_MAX_LENGTH } from '../../../constants/devices';
 import { Section } from './sectionParts';
 
@@ -13,6 +15,12 @@ export interface DeviceRow {
   device_model: string;
   created_at: string | null;
   local_name?: string | null;
+  /** Из записи HWID панели: приложение (по User-Agent), ОС, первое подключение и последнее обновление подписки. */
+  app_name?: string | null;
+  user_agent?: string | null;
+  os_version?: string | null;
+  first_seen_at?: string | null;
+  last_seen_at?: string | null;
 }
 
 /** Имя устройства для человека: своё название, иначе модель, иначе платформа. */
@@ -113,15 +121,29 @@ export function DevicesCard({
         <ul className="m-0 list-none divide-y divide-dark-800/80 p-0">
           {devices.map((device) => {
             const isEditing = editing?.hwid === device.hwid;
+            // created_at у старых бэкендов — это updatedAt панели, поэтому «с даты»
+            // берём из first_seen_at (createdAt), а его нет — не показываем.
             const subtitle = [
               device.local_name?.trim() ? device.device_model : null,
-              device.platform,
-              device.created_at
-                ? t(`${ns}.subscription.deviceSince`, { date: formatShortDate(device.created_at) })
+              device.app_name,
+              [device.platform, device.os_version].filter(Boolean).join(' '),
+              device.first_seen_at
+                ? t(`${ns}.subscription.deviceSince`, {
+                    date: formatShortDate(device.first_seen_at),
+                  })
+                : null,
+              device.last_seen_at
+                ? t(`${ns}.subscription.deviceLastSeen`, {
+                    when: relativeLabel(relativeTimeParts(device.last_seen_at), t),
+                  })
                 : null,
             ].filter(Boolean);
             return (
-              <li key={device.hwid} className="flex items-center gap-3 py-2.5" title={device.hwid}>
+              <li
+                key={device.hwid}
+                className="flex items-center gap-3 py-2.5"
+                title={[device.hwid, device.user_agent].filter(Boolean).join('\n')}
+              >
                 <div className="min-w-0 flex-1">
                   {isEditing ? (
                     <input
@@ -150,7 +172,7 @@ export function DevicesCard({
                       {deviceDisplayName(device)}
                     </div>
                   )}
-                  <div className="mt-0.5 truncate text-xs text-dark-500">
+                  <div className="mt-0.5 text-xs text-dark-500 [overflow-wrap:anywhere]">
                     {subtitle.join(' · ')}
                   </div>
                 </div>

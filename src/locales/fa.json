@@ -771,7 +771,8 @@
       "autopayHint": "اشتراک به‌طور خودکار از طریق Cashera تمدید می‌شود",
       "purchaseButton": "⚡ خرید با پرداخت خودکار Cashera",
       "purchaseHint": "برداشت خودکار را از طریق لینک Cashera تأیید کنید؛ سپس تمدیدها خودکار برداشت می‌شوند."
-    }
+    },
+    "deviceLastSeen": "آخرین به‌روزرسانی اشتراک: {{when}}"
   },
   "balance": {
     "title": "موجودی",
@@ -3764,7 +3765,8 @@
           "newTariff": "طرح جدید",
           "package": "بسته",
           "devicesLimit_one": "تا {{count}} دستگاه",
-          "devicesLimit_other": "تا {{count}} دستگاه"
+          "devicesLimit_other": "تا {{count}} دستگاه",
+          "deviceLastSeen": "آخرین به‌روزرسانی اشتراک: {{when}}"
         },
         "balance": {
           "current": "موجودی فعلی",

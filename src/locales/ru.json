@@ -882,7 +882,8 @@
       "autopayHint": "Подписка будет автоматически продлеваться через Cashera",
       "purchaseButton": "⚡ Оформить с автооплатой Cashera",
       "purchaseHint": "Подтвердите автосписания по ссылке Cashera; дальше продления списываются автоматически."
-    }
+    },
+    "deviceLastSeen": "обновлял подписку {{when}}"
   },
   "balance": {
     "title": "Баланс",
@@ -5367,7 +5368,8 @@
           "package": "Пакет",
           "devicesLimit_one": "до {{count}} устройства",
           "devicesLimit_few": "до {{count}} устройств",
-          "devicesLimit_many": "до {{count}} устройств"
+          "devicesLimit_many": "до {{count}} устройств",
+          "deviceLastSeen": "обновлял подписку {{when}}"
         },
         "balance": {
           "current": "Текущий баланс",

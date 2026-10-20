@@ -838,6 +838,11 @@ export const adminUsersApi = {
       device_model: string;
       created_at: string | null;
       local_name?: string | null;
+      app_name?: string | null;
+      user_agent?: string | null;
+      os_version?: string | null;
+      first_seen_at?: string | null;
+      last_seen_at?: string | null;
     }[];
     total: number;
     device_limit: number;
