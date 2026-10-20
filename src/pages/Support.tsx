@@ -20,6 +20,8 @@ import { usePlatform } from '@/platform';
 import { linkifyText } from '../utils/linkify';
 import { resolveSupportContact } from '../utils/supportContact';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
+import { TicketCsat } from '../components/tickets/TicketCsat';
+import { TICKET_POLL_INTERVAL_MS, useTicketLiveUpdates } from '../hooks/useTicketLiveUpdates';
 
 const log = logger.createLogger('Support');
 
@@ -104,13 +106,17 @@ export default function Support() {
     queryKey: ['tickets'],
     queryFn: () => ticketsApi.getTickets({ per_page: 20 }),
     enabled: supportConfig?.tickets_enabled === true,
+    refetchInterval: TICKET_POLL_INTERVAL_MS,
   });
 
   const { data: ticketDetail, isLoading: detailLoading } = useQuery({
     queryKey: ['ticket', selectedTicket?.id],
     queryFn: () => ticketsApi.getTicket(selectedTicket!.id),
     enabled: !!selectedTicket,
+    refetchInterval: TICKET_POLL_INTERVAL_MS,
   });
+
+  useTicketLiveUpdates('user');
 
   // Handle file selection (multi-upload)
   const handleFileSelect = async (
@@ -705,6 +711,11 @@ export default function Support() {
                   </div>
                 </form>
               )}
+
+              {ticketDetail?.status === 'closed' &&
+                (ticketDetail.csat_available || ticketDetail.csat_rating) && (
+                  <TicketCsat ticketId={ticketDetail.id} rating={ticketDetail.csat_rating} />
+                )}
 
               {ticketDetail?.is_reply_blocked && (
                 <div className="border-t border-dark-800/50 py-4 text-center text-sm text-dark-500">

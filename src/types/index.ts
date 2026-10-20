@@ -678,6 +678,9 @@ export interface Ticket {
   closed_at: string | null;
   messages_count: number;
   last_message: TicketMessage | null;
+  /** Блок оценки поддержки: только у закрытых тикетов, начатых в кабинете. */
+  csat_available?: boolean;
+  csat_rating?: number | null;
 }
 
 export interface TicketDetail extends Omit<Ticket, 'messages_count' | 'last_message'> {
