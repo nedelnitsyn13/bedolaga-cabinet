@@ -5,6 +5,7 @@ import { subscriptionApi } from '@/api/subscription';
 import { DevicesIcon, PlusIcon, TrashIcon, WarningIcon } from '@/components/icons';
 import { ResponsiveSheet } from '@/components/ui/ResponsiveSheet';
 import { getApiErrorMessage } from '@/utils/api-error';
+import { deviceUpdatedLabel } from '@/utils/deviceUpdated';
 
 interface DeviceLimitSheetProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface DeviceLimitSheetProps {
     device_model: string;
     local_name?: string | null;
     app_name?: string | null;
+    last_seen_at?: string | null;
   }>;
   /** Уводит на страницу подписки, где живёт докупка слотов. */
   onOpenSubscription: () => void;
@@ -101,8 +103,8 @@ export function DeviceLimitSheet({
                   <div className="truncate text-[13px] text-dark-100">
                     {device.local_name || device.device_model || device.platform}
                   </div>
-                  <div className="text-[11px] text-dark-500">
-                    {[device.app_name, device.platform].filter(Boolean).join(' · ')}
+                  <div className="truncate text-[11px] text-dark-500">
+                    {deviceUpdatedLabel(device, t)}
                   </div>
                 </div>
                 <button

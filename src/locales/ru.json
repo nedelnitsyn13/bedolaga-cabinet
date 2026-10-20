@@ -883,7 +883,8 @@
       "purchaseButton": "⚡ Оформить с автооплатой Cashera",
       "purchaseHint": "Подтвердите автосписания по ссылке Cashera; дальше продления списываются автоматически."
     },
-    "deviceLastSeen": "обновлял подписку {{when}}"
+    "deviceUpdatedIn": "Обновлено в {{app}} {{when}}",
+    "deviceUpdated": "Обновлено {{when}}"
   },
   "balance": {
     "title": "Баланс",

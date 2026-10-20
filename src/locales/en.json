@@ -855,7 +855,8 @@
       "purchaseButton": "⚡ Subscribe with Cashera auto-pay",
       "purchaseHint": "Confirm auto-charges via the Cashera link; renewals are then charged automatically."
     },
-    "deviceLastSeen": "subscription updated {{when}}"
+    "deviceUpdatedIn": "Updated in {{app}} {{when}}",
+    "deviceUpdated": "Updated {{when}}"
   },
   "balance": {
     "title": "Balance",
