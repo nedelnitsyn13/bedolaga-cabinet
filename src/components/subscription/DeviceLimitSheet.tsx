@@ -18,6 +18,7 @@ interface DeviceLimitSheetProps {
     platform: string;
     device_model: string;
     local_name?: string | null;
+    app_name?: string | null;
   }>;
   /** Уводит на страницу подписки, где живёт докупка слотов. */
   onOpenSubscription: () => void;
@@ -100,7 +101,9 @@ export function DeviceLimitSheet({
                   <div className="truncate text-[13px] text-dark-100">
                     {device.local_name || device.device_model || device.platform}
                   </div>
-                  <div className="text-[11px] text-dark-500">{device.platform}</div>
+                  <div className="text-[11px] text-dark-500">
+                    {[device.app_name, device.platform].filter(Boolean).join(' · ')}
+                  </div>
                 </div>
                 <button
                   type="button"

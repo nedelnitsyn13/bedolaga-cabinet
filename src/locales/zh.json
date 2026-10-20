@@ -765,7 +765,8 @@
       "autopayHint": "订阅将通过 Cashera 自动续费",
       "purchaseButton": "⚡ 使用 Cashera 自动付款订阅",
       "purchaseHint": "通过 Cashera 链接确认自动扣款，之后续费将自动扣款。"
-    }
+    },
+    "deviceLastSeen": "订阅更新于 {{when}}"
   },
   "balance": {
     "title": "余额",
@@ -3754,7 +3755,8 @@
           "shortenDays": "减少天数",
           "newTariff": "新套餐",
           "package": "流量包",
-          "devicesLimit_other": "最多 {{count}} 台设备"
+          "devicesLimit_other": "最多 {{count}} 台设备",
+          "deviceLastSeen": "订阅更新于 {{when}}"
         },
         "balance": {
           "current": "当前余额",

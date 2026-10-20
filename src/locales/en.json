@@ -854,7 +854,8 @@
       "autopayHint": "Your subscription will renew automatically via Cashera",
       "purchaseButton": "⚡ Subscribe with Cashera auto-pay",
       "purchaseHint": "Confirm auto-charges via the Cashera link; renewals are then charged automatically."
-    }
+    },
+    "deviceLastSeen": "subscription updated {{when}}"
   },
   "balance": {
     "title": "Balance",
@@ -4928,7 +4929,8 @@
           "newTariff": "New plan",
           "package": "Package",
           "devicesLimit_one": "up to {{count}} device",
-          "devicesLimit_other": "up to {{count}} devices"
+          "devicesLimit_other": "up to {{count}} devices",
+          "deviceLastSeen": "subscription updated {{when}}"
         },
         "balance": {
           "current": "Current balance",

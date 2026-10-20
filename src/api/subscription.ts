@@ -1,6 +1,7 @@
 import apiClient from './client';
 import { getYandexCid } from '../utils/yandexCid';
 import type {
+  Device,
   Subscription,
   SubscriptionStatusResponse,
   SubscriptionListItem,
@@ -322,13 +323,7 @@ export const subscriptionApi = {
   getDevices: async (
     subscriptionId?: number,
   ): Promise<{
-    devices: Array<{
-      hwid: string;
-      platform: string;
-      device_model: string;
-      created_at: string | null;
-      local_name?: string | null;
-    }>;
+    devices: Device[];
     total: number;
     device_limit: number;
   }> => {

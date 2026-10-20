@@ -168,6 +168,12 @@ export interface Device {
    * to `device_model` / `platform` for display.
    */
   local_name?: string | null;
+  /** Из записи HWID панели: приложение (по User-Agent), ОС, первое подключение и последнее обновление подписки. */
+  app_name?: string | null;
+  user_agent?: string | null;
+  os_version?: string | null;
+  first_seen_at?: string | null;
+  last_seen_at?: string | null;
 }
 
 export interface RenewalOption {
