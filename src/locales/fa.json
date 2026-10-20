@@ -772,7 +772,8 @@
       "purchaseButton": "⚡ خرید با پرداخت خودکار Cashera",
       "purchaseHint": "برداشت خودکار را از طریق لینک Cashera تأیید کنید؛ سپس تمدیدها خودکار برداشت می‌شوند."
     },
-    "deviceLastSeen": "آخرین به‌روزرسانی اشتراک: {{when}}"
+    "deviceUpdatedIn": "به‌روزرسانی در {{app}} {{when}}",
+    "deviceUpdated": "به‌روزرسانی {{when}}"
   },
   "balance": {
     "title": "موجودی",

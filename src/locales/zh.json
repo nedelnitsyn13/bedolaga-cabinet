@@ -766,7 +766,8 @@
       "purchaseButton": "⚡ 使用 Cashera 自动付款订阅",
       "purchaseHint": "通过 Cashera 链接确认自动扣款，之后续费将自动扣款。"
     },
-    "deviceLastSeen": "订阅更新于 {{when}}"
+    "deviceUpdatedIn": "{{when}} 在 {{app}} 中更新",
+    "deviceUpdated": "{{when}} 更新"
   },
   "balance": {
     "title": "余额",

@@ -10,8 +10,7 @@ import { useHaptic } from '@/platform';
 import { useDestructiveConfirm } from '@/platform/hooks/useNativeDialog';
 import type { Subscription } from '@/types';
 import { getGlassColors } from '@/utils/glassTheme';
-import { relativeTimeParts } from '@/utils/relativeTime';
-import { relativeLabel } from '@/components/admin/users/RelativeTime';
+import { deviceUpdatedLabel } from '@/utils/deviceUpdated';
 import { useTheme } from '@/hooks/useTheme';
 
 export interface DevicesPanelProps {
@@ -173,21 +172,9 @@ export function DevicesPanel({ subscription, subscriptionId }: DevicesPanelProps
                         {displayName}
                       </div>
                     )}
-                    <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-dark-400">
-                      <span className="truncate">
-                        {[device.app_name, device.platform].filter(Boolean).join(' · ')}
-                      </span>
-                      <span className="font-mono text-dark-400">
-                        {device.hwid.slice(0, 8).toUpperCase()}
-                      </span>
+                    <div className="mt-0.5 truncate text-[11px] text-dark-400">
+                      {deviceUpdatedLabel(device, t)}
                     </div>
-                    {device.last_seen_at && (
-                      <div className="mt-0.5 text-[11px] text-dark-500">
-                        {t('subscription.deviceLastSeen', {
-                          when: relativeLabel(relativeTimeParts(device.last_seen_at), t),
-                        })}
-                      </div>
-                    )}
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-1">
