@@ -11,6 +11,22 @@ interface PurchaseCTAButtonProps {
   isMultiTariff?: boolean;
 }
 
+/**
+ * Куда ведёт «Продлить»: общий адрес для кнопки на странице подписки и плитки
+ * на главной.
+ *
+ * Legacy (no tariff) → tariff catalog pinned to this subscription
+ * Trial → purchase page (buy a real tariff, trial can't be renewed)
+ * Multi-tariff active → per-subscription renew page
+ * Otherwise → purchase page
+ */
+export function purchaseCtaPath(subscription: Subscription | null, isMultiTariff = false): string {
+  if (needsTariff(subscription) && subscription?.id) return tariffSelectionPath(subscription.id);
+  if (subscription?.is_trial) return '/subscription/purchase';
+  if (isMultiTariff && subscription?.id) return `/subscriptions/${subscription.id}/renew`;
+  return '/subscription/purchase';
+}
+
 export default function PurchaseCTAButton({
   subscription,
   isMultiTariff = false,
@@ -48,18 +64,7 @@ export default function PurchaseCTAButton({
           ? t('subscription.cta.renewHint', 'Продление подписки')
           : t('subscription.cta.activeHint');
 
-  // Legacy (no tariff) → tariff catalog pinned to this subscription
-  // Trial → purchase page (buy a real tariff, trial can't be renewed)
-  // Multi-tariff active → per-subscription renew page
-  // Otherwise → purchase page
-  const linkTo =
-    requiresTariff && subscription?.id
-      ? tariffSelectionPath(subscription.id)
-      : isTrial
-        ? '/subscription/purchase'
-        : isMultiTariff && subscription?.id
-          ? `/subscriptions/${subscription.id}/renew`
-          : '/subscription/purchase';
+  const linkTo = purchaseCtaPath(subscription, isMultiTariff);
 
   return (
     <Link to={linkTo} className="block">

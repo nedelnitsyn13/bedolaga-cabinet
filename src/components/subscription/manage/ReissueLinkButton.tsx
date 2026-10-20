@@ -29,6 +29,8 @@ export function canReissueLink(
 export interface ReissueLinkButtonProps {
   subscription: Subscription;
   subscriptionId: number | undefined;
+  /** Плитка главной: короткая подпись, без пояснения; пауза — в подписи. */
+  variant?: 'block' | 'tile';
 }
 
 /**
@@ -42,7 +44,11 @@ export interface ReissueLinkButtonProps {
  *
  * Возвращает null там, где перевыпускать нечего: у пробных и у неактивных.
  */
-export function ReissueLinkButton({ subscription, subscriptionId }: ReissueLinkButtonProps) {
+export function ReissueLinkButton({
+  subscription,
+  subscriptionId,
+  variant = 'block',
+}: ReissueLinkButtonProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const haptic = useHaptic();
@@ -91,6 +97,34 @@ export function ReissueLinkButton({ subscription, subscriptionId }: ReissueLinkB
   };
 
   if (!canReissueLink(subscription)) return null;
+
+  if (variant === 'tile') {
+    return (
+      <button
+        type="button"
+        onClick={handleRevoke}
+        disabled={revokeMutation.isPending || cooldown > 0}
+        title={revokeMutation.error ? getErrorMessage(revokeMutation.error) : undefined}
+        className="flex h-16 w-full items-center gap-3 rounded-[18px] border border-warning-500/25 bg-warning-500/5 px-3.5 text-left transition-colors hover:bg-warning-500/10 disabled:opacity-50"
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-warning-500/15 text-warning-400">
+          {revokeMutation.isPending ? (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-warning-400/30 border-t-amber-400" />
+          ) : (
+            <ArrowPathIcon className="h-[18px] w-[18px]" />
+          )}
+        </span>
+        <span className="min-w-0 text-sm font-semibold leading-tight text-warning-400">
+          {t('dashboard.home.reissue', 'Перевыпуск')}
+          {cooldown > 0 && (
+            <span className="mt-0.5 block font-mono text-[11px] font-medium text-dark-400">
+              {`${Math.floor(cooldown / 60)}:${String(cooldown % 60).padStart(2, '0')}`}
+            </span>
+          )}
+        </span>
+      </button>
+    );
+  }
 
   return (
     <>

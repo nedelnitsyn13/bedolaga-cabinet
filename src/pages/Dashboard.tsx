@@ -6,25 +6,24 @@ import { useAuthStore } from '../store/auth';
 import { displayName } from '../utils/displayName';
 import { useBlockingStore } from '../store/blocking';
 import { subscriptionApi } from '../api/subscription';
-import { referralApi } from '../api/referral';
 import { balanceApi } from '../api/balance';
 import { wheelApi } from '../api/wheel';
 import Onboarding, { useOnboarding } from '../components/Onboarding';
 import PromoOffersSection from '../components/PromoOffersSection';
 import NewsSection from '../components/news/NewsSection';
-import SubscriptionCardActive from '../components/dashboard/SubscriptionCardActive';
+import HomeSubscriptionPanel from '../components/dashboard/HomeSubscriptionPanel';
 import SubscriptionCardExpired from '../components/dashboard/SubscriptionCardExpired';
 import { hasLegacySubscription } from '../utils/legacySubscription';
 import TrialOfferCard from '../components/dashboard/TrialOfferCard';
 import ReminderCards from '../components/dashboard/ReminderCards';
-import StatsGrid from '../components/dashboard/StatsGrid';
 import { giftApi } from '../api/gift';
 import { promoApi } from '../api/promo';
 import PendingGiftCard from '../components/dashboard/PendingGiftCard';
 import SubscriptionListCard from '../components/subscription/SubscriptionListCard';
 import { DeviceLimitSheet } from '../components/subscription/DeviceLimitSheet';
 import { API } from '../config/constants';
-import { ChevronRightIcon, StarIcon } from '@/components/icons';
+import { CardIcon, ChevronRightIcon, StarIcon } from '@/components/icons';
+import { useCurrency } from '../hooks/useCurrency';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { safeLocal } from '../utils/safeStorage';
 import { getApiErrorMessage } from '../utils/api-error';
@@ -78,13 +77,6 @@ export default function Dashboard() {
     enabled: !subscription && !subLoading,
   });
 
-  const { data: devicesData } = useQuery({
-    queryKey: ['devices'],
-    queryFn: () => subscriptionApi.getDevices(),
-    enabled: !!subscription && !isMultiTariff,
-    staleTime: API.BALANCE_STALE_TIME_MS,
-  });
-
   // Плитка «Подключить устройство» на главной живёт в МУЛЬТИТАРИФНОЙ ветке, а
   // запрос выше там выключен: он привязан к одиночной подписке (`subscription`
   // в мультитарифе всегда null). Без отдельного запроса счётчик плитки всегда
@@ -113,11 +105,6 @@ export default function Dashboard() {
   const deviceLimitSub = visibleSubscriptions.find((s) => s.id === deviceLimitSubId) ?? null;
   const deviceLimitDevices =
     deviceQueries[visibleSubscriptions.findIndex((s) => s.id === deviceLimitSubId)]?.data;
-
-  const { data: referralInfo, isLoading: refLoading } = useQuery({
-    queryKey: ['referral-info'],
-    queryFn: referralApi.getReferralInfo,
-  });
 
   const { data: wheelConfig } = useQuery({
     queryKey: ['wheel-config'],
@@ -244,11 +231,11 @@ export default function Dashboard() {
 
   // Show onboarding for new users after data loads
   useEffect(() => {
-    if (!isOnboardingCompleted && !subLoading && !refLoading && !blockingType) {
+    if (!isOnboardingCompleted && !subLoading && !blockingType) {
       const timer = setTimeout(() => setShowOnboarding(true), 500);
       return () => clearTimeout(timer);
     }
-  }, [isOnboardingCompleted, subLoading, refLoading, blockingType]);
+  }, [isOnboardingCompleted, subLoading, blockingType]);
 
   const onboardingSteps = useMemo(() => {
     type Placement = 'top' | 'bottom' | 'left' | 'right';
@@ -290,19 +277,19 @@ export default function Dashboard() {
   };
 
   const userName = displayName(user);
+  const { formatAmount, currencySymbol } = useCurrency();
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div data-onboarding="welcome">
-        <h1 className="text-2xl font-bold text-dark-50 sm:text-3xl">
-          {userName ? t('dashboard.welcome', { name: userName }) : t('dashboard.welcomeNoName')}
-        </h1>
-        <div className="mt-1 flex flex-wrap items-center gap-2">
-          <p className="text-dark-400">{t('dashboard.yourSubscription')}</p>
+      {/* Header: приветствие и баланс */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0" data-onboarding="welcome">
+          <h1 className="truncate text-2xl font-bold text-dark-50 sm:text-3xl">
+            {userName ? t('dashboard.welcome', { name: userName }) : t('dashboard.welcomeNoName')}
+          </h1>
           {promoGroupData?.group_name && (
             <span
-              className="inline-flex max-w-[160px] items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+              className="mt-1.5 inline-flex max-w-[160px] items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
               style={{
                 background: 'rgba(var(--color-accent-400), 0.1)',
                 border: '1px solid rgba(var(--color-accent-400), 0.2)',
@@ -314,6 +301,27 @@ export default function Dashboard() {
             </span>
           )}
         </div>
+        <Link
+          to="/balance"
+          data-onboarding="balance"
+          className="bento-card-hover flex shrink-0 items-center gap-2.5 whitespace-nowrap !rounded-[18px] !p-2.5 !pr-3"
+        >
+          <span
+            className="flex h-9 w-9 items-center justify-center rounded-[11px] text-accent-400"
+            style={{ background: 'rgba(var(--color-accent-400), 0.12)' }}
+          >
+            <CardIcon className="h-[18px] w-[18px]" />
+          </span>
+          <span>
+            <span className="block text-[11px] font-semibold text-dark-400">
+              {t('dashboard.stats.balance')}
+            </span>
+            <span className="block text-base font-extrabold text-accent-400">
+              {`${formatAmount(balanceData?.balance_rubles ?? 0)}\u00A0${currencySymbol}`}
+            </span>
+          </span>
+          <ChevronRightIcon className="h-4 w-4 text-dark-500" />
+        </Link>
       </div>
 
       {/* Pending Gift Activations */}
@@ -396,14 +404,24 @@ export default function Dashboard() {
             balanceRubles={balanceData?.balance_rubles ?? 0}
           />
         ) : subscription ? (
-          <SubscriptionCardActive
-            subscription={subscription}
-            trafficData={trafficData}
-            refreshTrafficMutation={refreshTrafficMutation}
-            trafficRefreshCooldown={trafficRefreshCooldown}
-            connectedDevices={devicesData?.total ?? 0}
-          />
+          <HomeSubscriptionPanel subscription={subscription} trafficData={trafficData} />
         ) : null)}
+
+      {/* Вкладки «Подписка» больше нет: у истёкшей или ограниченной подписки
+          управление (устройства, перевыпуск, докупка) — по ссылке под карточкой. */}
+      {!isMultiTariff &&
+        subscription &&
+        (subscription.is_expired ||
+          subscription.status === 'disabled' ||
+          subscription.is_limited) && (
+          <Link
+            to="/subscriptions"
+            className="flex items-center justify-center gap-1 text-sm font-medium text-accent-400 hover:underline"
+          >
+            {t('lite.rows.manage', 'Управление подпиской')}
+            <ChevronRightIcon className="h-4 w-4" />
+          </Link>
+        )}
 
       {/* Нет подписок: показываем триал (если доступен) и ВСЕГДА одну явную
           кнопку покупки. Триал не обязателен, чтобы попасть в витрину — раньше
@@ -433,14 +451,6 @@ export default function Dashboard() {
 
       {/* Promo Offers */}
       <PromoOffersSection />
-
-      {/* Stats Grid */}
-      <StatsGrid
-        balanceRubles={balanceData?.balance_rubles || 0}
-        referralCount={referralInfo?.total_referrals || 0}
-        earningsRubles={referralInfo?.available_balance_rubles || 0}
-        refLoading={refLoading}
-      />
 
       {/* Fortune Wheel Banner */}
       {wheelConfig?.is_enabled && (

@@ -3,34 +3,30 @@ import { isMobileNavScreen, mobileNavItems } from './mobileNavRoutes';
 
 /**
  * Нижняя панель на телефоне живёт только на экранах, куда ведут её кнопки:
- * главная, подписка, баланс, поддержка и один слот под колесо или рефералку.
+ * главная, баланс, поддержка и один слот под колесо или рефералку. «Подписки»
+ * в панели нет: подписка целиком на главной.
  * На вложенных страницах и в админке панель не показывается, а место под ней
  * не резервируется. Набор экранов и проверка «мы на таком экране» — в одном
  * месте, чтобы панель и оболочка не разошлись.
  */
 describe('mobileNavItems', () => {
-  it('без флагов — четыре базовых экрана', () => {
-    expect(mobileNavItems({}).map((item) => item.path)).toEqual([
-      '/',
-      '/subscriptions',
-      '/balance',
-      '/support',
-    ]);
+  it('без флагов — три базовых экрана, без «Подписки»', () => {
+    expect(mobileNavItems({}).map((item) => item.path)).toEqual(['/', '/balance', '/support']);
   });
 
   it('колесо занимает слот перед поддержкой и вытесняет рефералку', () => {
     const paths = mobileNavItems({ wheelEnabled: true, referralEnabled: true }).map(
       (item) => item.path,
     );
-    expect(paths).toEqual(['/', '/subscriptions', '/balance', '/wheel', '/support']);
+    expect(paths).toEqual(['/', '/balance', '/wheel', '/support']);
   });
 
   it('рефералка получает слот, когда колесо выключено', () => {
     const paths = mobileNavItems({ referralEnabled: true }).map((item) => item.path);
-    expect(paths).toEqual(['/', '/subscriptions', '/balance', '/referral', '/support']);
+    expect(paths).toEqual(['/', '/balance', '/referral', '/support']);
   });
 
-  it('простой вид убирает «Подписку»: главный экран и есть она', () => {
+  it('простой вид даёт тот же набор', () => {
     expect(mobileNavItems({ lite: true }).map((item) => item.path)).toEqual([
       '/',
       '/balance',
@@ -56,7 +52,6 @@ describe('mobileNavItems', () => {
   it('ключ пункта совпадает с ключом перевода nav.*', () => {
     expect(mobileNavItems({ wheelEnabled: true }).map((item) => item.key)).toEqual([
       'dashboard',
-      'subscription',
       'balance',
       'wheel',
       'support',
@@ -68,7 +63,7 @@ describe('isMobileNavScreen', () => {
   const items = mobileNavItems({ wheelEnabled: true });
 
   it('главная и экраны кнопок — да', () => {
-    for (const path of ['/', '/subscriptions', '/balance', '/wheel', '/support']) {
+    for (const path of ['/', '/balance', '/wheel', '/support']) {
       expect(isMobileNavScreen(path, items), path).toBe(true);
     }
   });
@@ -83,15 +78,12 @@ describe('isMobileNavScreen', () => {
     }
   });
 
-  it('карточка подписки — да: кнопка «Подписка» приводит именно сюда', () => {
-    // Список с единственной подпиской сам открывает её карточку, так что человек
-    // нажимает кнопку панели и оказывается здесь. Пропадающая панель на этом
-    // экране и была багом.
-    expect(isMobileNavScreen('/subscriptions/12', items)).toBe(true);
-    expect(isMobileNavScreen('/subscriptions/12/', items)).toBe(true);
+  it('карточка подписки — вложенная страница: кнопки «Подписка» в панели нет', () => {
+    expect(isMobileNavScreen('/subscriptions/12', items)).toBe(false);
+    expect(isMobileNavScreen('/subscriptions', items)).toBe(false);
   });
 
-  it('но продление изнутри карточки — уже нет', () => {
+  it('продление и покупка — тоже нет', () => {
     expect(isMobileNavScreen('/subscriptions/12/renew', items)).toBe(false);
     expect(isMobileNavScreen('/subscription/purchase', items)).toBe(false);
   });

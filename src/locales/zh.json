@@ -354,7 +354,17 @@
     "unlimited": "无限",
     "usageLast14Days": "近 14 天使用情况",
     "usedSuffix": "已用",
-    "validUntil": "有效期至 {{date}}"
+    "validUntil": "有效期至 {{date}}",
+    "home": {
+      "left": "剩余",
+      "linkTitle": "订阅链接",
+      "renew": "续费",
+      "upgrade": "购买套餐",
+      "devicesAndTraffic": "设备与流量",
+      "autopayOn": "已开启",
+      "autopayOff": "已关闭",
+      "reissue": "重新生成"
+    }
   },
   "subscription": {
     "title": "订阅",

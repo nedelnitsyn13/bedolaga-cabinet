@@ -388,7 +388,17 @@
     },
     "manageAll": "Manage all",
     "showAll": "Show all",
-    "subscriptions": "Subscriptions"
+    "subscriptions": "Subscriptions",
+    "home": {
+      "left": "left",
+      "linkTitle": "Subscription link",
+      "renew": "Renew",
+      "upgrade": "Buy a plan",
+      "devicesAndTraffic": "Devices and traffic",
+      "autopayOn": "On",
+      "autopayOff": "Off",
+      "reissue": "Reissue"
+    }
   },
   "subscription": {
     "title": "Subscription",

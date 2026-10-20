@@ -28,17 +28,14 @@ export interface AutopayToggleProps {
  * Возвращает null, когда тумблер неуместен (пробные, суточные и старые
  * подписки) — решение принимает общий помощник, а не вызывающий экран.
  */
-export function AutopayToggle({
-  subscription,
-  subscriptionId,
-  accentColor,
-  offColor,
-  surface,
-}: AutopayToggleProps) {
-  const { t } = useTranslation();
+/**
+ * Переключение автоплатежа с баланса. Общий для тумблера на странице подписки
+ * и плитки на главной: инвалидации (в том числе СБП) должны быть одни и те же.
+ */
+export function useAutopayMutation(subscriptionId: number | undefined) {
   const queryClient = useQueryClient();
 
-  const autopayMutation = useMutation({
+  return useMutation({
     mutationFn: (enabled: boolean) =>
       subscriptionApi.updateAutopay(enabled, undefined, subscriptionId),
     onSuccess: () => {
@@ -47,8 +44,21 @@ export function AutopayToggle({
       // Enabling balance-autopay cancels SBP auto-pay server-side — refresh so
       // the SBP block doesn't keep showing a now-stale 'active'/'pending' state.
       queryClient.invalidateQueries({ queryKey: ['sbp-recurring', subscriptionId] });
+      // Главная держит одиночную подписку под ключом без id.
+      queryClient.invalidateQueries({ queryKey: ['subscription'] });
     },
   });
+}
+
+export function AutopayToggle({
+  subscription,
+  subscriptionId,
+  accentColor,
+  offColor,
+  surface,
+}: AutopayToggleProps) {
+  const { t } = useTranslation();
+  const autopayMutation = useAutopayMutation(subscriptionId);
 
   if (!showsAutopayToggle(subscription)) return null;
 
