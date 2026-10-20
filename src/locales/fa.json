@@ -359,7 +359,17 @@
     "unlimited": "نامحدود",
     "usageLast14Days": "مصرف ۱۴ روز اخیر",
     "usedSuffix": "مصرف شده",
-    "validUntil": "معتبر تا {{date}}"
+    "validUntil": "معتبر تا {{date}}",
+    "home": {
+      "left": "باقی‌مانده",
+      "linkTitle": "لینک اشتراک",
+      "renew": "تمدید",
+      "upgrade": "خرید طرح",
+      "devicesAndTraffic": "دستگاه‌ها و ترافیک",
+      "autopayOn": "روشن",
+      "autopayOff": "خاموش",
+      "reissue": "صدور مجدد"
+    }
   },
   "subscription": {
     "title": "اشتراک",

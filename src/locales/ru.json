@@ -396,7 +396,17 @@
     },
     "manageAll": "Управлять всеми",
     "showAll": "Показать все",
-    "subscriptions": "Подписки"
+    "subscriptions": "Подписки",
+    "home": {
+      "left": "осталось",
+      "linkTitle": "Ссылка подписки",
+      "renew": "Продлить",
+      "upgrade": "Купить тариф",
+      "devicesAndTraffic": "Устройства и трафик",
+      "autopayOn": "Включено",
+      "autopayOff": "Выключено",
+      "reissue": "Перевыпуск"
+    }
   },
   "subscription": {
     "title": "Подписка",

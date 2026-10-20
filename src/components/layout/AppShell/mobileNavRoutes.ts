@@ -46,9 +46,14 @@ function slotItems({ wheelEnabled, referralEnabled }: MobileNavFlags): readonly 
   return [];
 }
 
+/**
+ * «Подписки» в панели нет ни в одном виде: подписка целиком живёт на главной
+ * (HomeSubscriptionPanel), а её страница осталась вложенной — туда ведут
+ * карточки на главной и пункт меню в шапке. Флаг `lite` больше ничего не
+ * меняет в наборе, но остаётся частью контракта вызова.
+ */
 export function mobileNavItems(flags: MobileNavFlags): readonly MobileNavItem[] {
-  const head = flags.lite ? [DASHBOARD, BALANCE] : [DASHBOARD, SUBSCRIPTION, BALANCE];
-  return [...head, ...slotItems(flags), SUPPORT];
+  return [DASHBOARD, BALANCE, ...slotItems(flags), SUPPORT];
 }
 
 function withoutTrailingSlash(pathname: string): string {
