@@ -369,7 +369,12 @@
       "autopayOn": "روشن",
       "autopayOff": "خاموش",
       "reissue": "صدور مجدد",
-      "greeting": "خوش آمدید"
+      "greeting": {
+        "morning": "صبح بخیر",
+        "day": "روز بخیر",
+        "evening": "عصر بخیر",
+        "night": "شب بخیر"
+      }
     }
   },
   "subscription": {

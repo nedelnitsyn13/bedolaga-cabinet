@@ -364,7 +364,12 @@
       "autopayOn": "已开启",
       "autopayOff": "已关闭",
       "reissue": "重新生成",
-      "greeting": "欢迎"
+      "greeting": {
+        "morning": "早上好",
+        "day": "下午好",
+        "evening": "晚上好",
+        "night": "夜深了"
+      }
     }
   },
   "subscription": {

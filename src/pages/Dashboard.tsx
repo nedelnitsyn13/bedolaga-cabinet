@@ -24,6 +24,7 @@ import { DeviceLimitSheet } from '../components/subscription/DeviceLimitSheet';
 import { API } from '../config/constants';
 import { CardIcon, ChevronRightIcon, StarIcon } from '@/components/icons';
 import { useCurrency } from '../hooks/useCurrency';
+import { greetingKey } from '../utils/greeting';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { safeLocal } from '../utils/safeStorage';
 import { getApiErrorMessage } from '../utils/api-error';
@@ -284,12 +285,11 @@ export default function Dashboard() {
       {/* Header: приветствие и баланс */}
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0" data-onboarding="welcome">
-          {/* Приветствие мелко, имя крупно: в одну строку рядом с плиткой баланса
-              имя не помещалось и обрезалось многоточием. Группа — справа от имени. */}
+          {/* Приветствие по времени суток мелко, имя крупно: в одну строку рядом
+              с плиткой баланса имя не помещалось и обрезалось многоточием.
+              Группа — справа от имени. */}
           {userName && (
-            <p className="text-sm text-dark-400">
-              {t('dashboard.home.greeting', 'Добро пожаловать')}
-            </p>
+            <p className="text-sm text-dark-400">{t(`dashboard.home.greeting.${greetingKey()}`)}</p>
           )}
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
             <h1 className="min-w-0 break-words text-2xl font-bold leading-tight text-dark-50 sm:text-3xl">

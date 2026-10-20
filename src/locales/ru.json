@@ -406,7 +406,12 @@
       "autopayOn": "Включено",
       "autopayOff": "Выключено",
       "reissue": "Перевыпуск",
-      "greeting": "Добро пожаловать"
+      "greeting": {
+        "morning": "Доброе утро",
+        "day": "Добрый день",
+        "evening": "Добрый вечер",
+        "night": "Доброй ночи"
+      }
     }
   },
   "subscription": {

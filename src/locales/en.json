@@ -398,7 +398,12 @@
       "autopayOn": "On",
       "autopayOff": "Off",
       "reissue": "Reissue",
-      "greeting": "Welcome"
+      "greeting": {
+        "morning": "Good morning",
+        "day": "Good afternoon",
+        "evening": "Good evening",
+        "night": "Good night"
+      }
     }
   },
   "subscription": {
