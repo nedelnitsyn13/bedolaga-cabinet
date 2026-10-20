@@ -405,7 +405,8 @@
       "devicesAndTraffic": "Устройства и трафик",
       "autopayOn": "Включено",
       "autopayOff": "Выключено",
-      "reissue": "Перевыпуск"
+      "reissue": "Перевыпуск",
+      "greeting": "Добро пожаловать"
     }
   },
   "subscription": {

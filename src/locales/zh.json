@@ -363,7 +363,8 @@
       "devicesAndTraffic": "设备与流量",
       "autopayOn": "已开启",
       "autopayOff": "已关闭",
-      "reissue": "重新生成"
+      "reissue": "重新生成",
+      "greeting": "欢迎"
     }
   },
   "subscription": {

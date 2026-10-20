@@ -368,7 +368,8 @@
       "devicesAndTraffic": "دستگاه‌ها و ترافیک",
       "autopayOn": "روشن",
       "autopayOff": "خاموش",
-      "reissue": "صدور مجدد"
+      "reissue": "صدور مجدد",
+      "greeting": "خوش آمدید"
     }
   },
   "subscription": {

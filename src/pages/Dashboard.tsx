@@ -284,9 +284,22 @@ export default function Dashboard() {
       {/* Header: приветствие и баланс */}
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0" data-onboarding="welcome">
-          <h1 className="truncate text-2xl font-bold text-dark-50 sm:text-3xl">
-            {userName ? t('dashboard.welcome', { name: userName }) : t('dashboard.welcomeNoName')}
-          </h1>
+          {/* Приветствие мелко, имя крупно: в одну строку рядом с плиткой баланса
+              имя не помещалось и обрезалось многоточием. */}
+          {userName ? (
+            <>
+              <p className="text-sm text-dark-400">
+                {t('dashboard.home.greeting', 'Добро пожаловать')}
+              </p>
+              <h1 className="mt-0.5 break-words text-2xl font-bold leading-tight text-dark-50 sm:text-3xl">
+                {userName}
+              </h1>
+            </>
+          ) : (
+            <h1 className="break-words text-2xl font-bold leading-tight text-dark-50 sm:text-3xl">
+              {t('dashboard.welcomeNoName')}
+            </h1>
+          )}
           {promoGroupData?.group_name && (
             <span
               className="mt-1.5 inline-flex max-w-[160px] items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"

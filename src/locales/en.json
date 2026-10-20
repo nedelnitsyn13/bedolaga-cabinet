@@ -397,7 +397,8 @@
       "devicesAndTraffic": "Devices and traffic",
       "autopayOn": "On",
       "autopayOff": "Off",
-      "reissue": "Reissue"
+      "reissue": "Reissue",
+      "greeting": "Welcome"
     }
   },
   "subscription": {
