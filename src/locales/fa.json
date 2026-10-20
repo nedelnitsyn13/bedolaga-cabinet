@@ -368,7 +368,13 @@
       "devicesAndTraffic": "دستگاه‌ها و ترافیک",
       "autopayOn": "روشن",
       "autopayOff": "خاموش",
-      "reissue": "صدور مجدد"
+      "reissue": "صدور مجدد",
+      "greeting": {
+        "morning": "صبح بخیر",
+        "day": "روز بخیر",
+        "evening": "عصر بخیر",
+        "night": "شب بخیر"
+      }
     }
   },
   "subscription": {

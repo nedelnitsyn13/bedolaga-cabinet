@@ -397,7 +397,13 @@
       "devicesAndTraffic": "Devices and traffic",
       "autopayOn": "On",
       "autopayOff": "Off",
-      "reissue": "Reissue"
+      "reissue": "Reissue",
+      "greeting": {
+        "morning": "Good morning",
+        "day": "Good afternoon",
+        "evening": "Good evening",
+        "night": "Good night"
+      }
     }
   },
   "subscription": {

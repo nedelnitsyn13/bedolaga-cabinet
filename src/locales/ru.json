@@ -405,7 +405,13 @@
       "devicesAndTraffic": "Устройства и трафик",
       "autopayOn": "Включено",
       "autopayOff": "Выключено",
-      "reissue": "Перевыпуск"
+      "reissue": "Перевыпуск",
+      "greeting": {
+        "morning": "Доброе утро",
+        "day": "Добрый день",
+        "evening": "Добрый вечер",
+        "night": "Доброй ночи"
+      }
     }
   },
   "subscription": {

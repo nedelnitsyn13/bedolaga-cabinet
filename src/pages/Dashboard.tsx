@@ -24,6 +24,7 @@ import { DeviceLimitSheet } from '../components/subscription/DeviceLimitSheet';
 import { API } from '../config/constants';
 import { CardIcon, ChevronRightIcon, StarIcon } from '@/components/icons';
 import { useCurrency } from '../hooks/useCurrency';
+import { greetingKey } from '../utils/greeting';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { safeLocal } from '../utils/safeStorage';
 import { getApiErrorMessage } from '../utils/api-error';
@@ -284,22 +285,30 @@ export default function Dashboard() {
       {/* Header: приветствие и баланс */}
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0" data-onboarding="welcome">
-          <h1 className="truncate text-2xl font-bold text-dark-50 sm:text-3xl">
-            {userName ? t('dashboard.welcome', { name: userName }) : t('dashboard.welcomeNoName')}
-          </h1>
-          {promoGroupData?.group_name && (
-            <span
-              className="mt-1.5 inline-flex max-w-[160px] items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
-              style={{
-                background: 'rgba(var(--color-accent-400), 0.1)',
-                border: '1px solid rgba(var(--color-accent-400), 0.2)',
-                color: 'rgb(var(--color-accent-400))',
-              }}
-            >
-              <StarIcon filled className="h-2.5 w-2.5 shrink-0" />
-              <span className="truncate">{promoGroupData.group_name}</span>
-            </span>
+          {/* Приветствие по времени суток мелко, имя крупно: в одну строку рядом
+              с плиткой баланса имя не помещалось и обрезалось многоточием.
+              Группа — справа от имени. */}
+          {userName && (
+            <p className="text-sm text-dark-400">{t(`dashboard.home.greeting.${greetingKey()}`)}</p>
           )}
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <h1 className="min-w-0 break-words text-2xl font-bold leading-tight text-dark-50 sm:text-3xl">
+              {userName || t('dashboard.welcomeNoName')}
+            </h1>
+            {promoGroupData?.group_name && (
+              <span
+                className="inline-flex max-w-[160px] items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                style={{
+                  background: 'rgba(var(--color-accent-400), 0.1)',
+                  border: '1px solid rgba(var(--color-accent-400), 0.2)',
+                  color: 'rgb(var(--color-accent-400))',
+                }}
+              >
+                <StarIcon filled className="h-2.5 w-2.5 shrink-0" />
+                <span className="truncate">{promoGroupData.group_name}</span>
+              </span>
+            )}
+          </div>
         </div>
         <Link
           to="/balance"
