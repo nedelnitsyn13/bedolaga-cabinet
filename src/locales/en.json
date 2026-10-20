@@ -1305,6 +1305,12 @@
       "alreadyOpenTicket": "You already have an open ticket. Please continue the conversation there — a new ticket can be created once the current one is closed.",
       "createFailed": "Could not create the ticket. Please try again.",
       "replyFailed": "Could not send the reply. Please try again."
+    },
+    "csat": {
+      "prompt": "Please rate our support",
+      "thanks": "Thanks for your rating!",
+      "rate": "Rate {{rating}} of 5",
+      "failed": "Could not save your rating, please try again"
     }
   },
   "wheel": {
@@ -3807,6 +3813,13 @@
         "normal": "Normal",
         "high": "High",
         "urgent": "Urgent"
+      },
+      "csatRating": "Support rating",
+      "csatPending": "awaiting reply",
+      "csatAverage": "Average rating ({{count}})",
+      "source": {
+        "bot": "From bot",
+        "cabinet": "From cabinet"
       }
     },
     "tariffs": {

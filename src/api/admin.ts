@@ -37,6 +37,9 @@ export interface AdminTicket {
   messages_count: number;
   user: AdminTicketUser | null;
   last_message: AdminTicketMessage | null;
+  source?: 'bot' | 'cabinet' | null;
+  csat_rating?: number | null;
+  csat_requested?: boolean;
 }
 
 export interface AdminTicketDetail {
@@ -50,6 +53,10 @@ export interface AdminTicketDetail {
   is_reply_blocked: boolean;
   user: AdminTicketUser | null;
   messages: AdminTicketMessage[];
+  source?: 'bot' | 'cabinet' | null;
+  csat_rating?: number | null;
+  csat_requested?: boolean;
+  csat_rated_at?: string | null;
 }
 
 export interface AdminTicketStats {
@@ -58,6 +65,8 @@ export interface AdminTicketStats {
   pending: number;
   answered: number;
   closed: number;
+  csat_average?: number | null;
+  csat_count?: number;
 }
 
 export interface TicketSettings {

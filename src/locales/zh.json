@@ -1170,6 +1170,12 @@
       "alreadyOpenTicket": "您已有一个未关闭的工单。请在该工单中继续沟通，当前工单关闭后即可创建新工单。",
       "createFailed": "创建工单失败，请重试。",
       "replyFailed": "发送回复失败，请重试。"
+    },
+    "csat": {
+      "prompt": "请为我们的支持服务评分",
+      "thanks": "感谢您的评价！",
+      "rate": "评分 {{rating}} / 5",
+      "failed": "评分保存失败，请重试"
     }
   },
   "wheel": {
@@ -2786,6 +2792,13 @@
         "normal": "普通",
         "high": "高",
         "urgent": "紧急"
+      },
+      "csatRating": "支持评分",
+      "csatPending": "等待回复",
+      "csatAverage": "平均评分（{{count}}）",
+      "source": {
+        "bot": "来自机器人",
+        "cabinet": "来自个人中心"
       }
     },
     "tariffs": {

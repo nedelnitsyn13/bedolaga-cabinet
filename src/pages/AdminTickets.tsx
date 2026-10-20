@@ -22,6 +22,8 @@ import {
   XIcon,
 } from '@/components/icons';
 import { StatCard } from '@/components/stats';
+import { CsatStars } from '../components/tickets/TicketCsat';
+import { TICKET_POLL_INTERVAL_MS, useTicketLiveUpdates } from '../hooks/useTicketLiveUpdates';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 
 interface MediaAttachment {
@@ -114,13 +116,17 @@ export default function AdminTickets() {
         per_page: 20,
         status: statusFilter || undefined,
       }),
+    refetchInterval: TICKET_POLL_INTERVAL_MS,
   });
 
   const { data: selectedTicket, isLoading: ticketLoading } = useQuery({
     queryKey: ['admin-ticket', selectedTicketId],
     queryFn: () => adminApi.getTicket(selectedTicketId!),
     enabled: !!selectedTicketId,
+    refetchInterval: TICKET_POLL_INTERVAL_MS,
   });
+
+  useTicketLiveUpdates('admin');
 
   const statusMutation = useMutation({
     mutationFn: ({ ticketId, status }: { ticketId: number; status: string }) =>
@@ -308,7 +314,9 @@ export default function AdminTickets() {
 
       {/* Stats */}
       {stats && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <div
+          className={`grid grid-cols-2 gap-3 ${stats.csat_count ? 'sm:grid-cols-6' : 'sm:grid-cols-5'}`}
+        >
           <StatCard
             label={t('admin.tickets.total')}
             value={stats.total}
@@ -341,6 +349,16 @@ export default function AdminTickets() {
               tone="neutral"
             />
           </div>
+          {!!stats.csat_count && stats.csat_average != null && (
+            <div className="col-span-2 sm:col-span-1">
+              <StatCard
+                label={t('admin.tickets.csatAverage', { count: stats.csat_count })}
+                value={`${stats.csat_average.toFixed(1)} / 5`}
+                icon={<span className="text-lg leading-none">★</span>}
+                tone="warning"
+              />
+            </div>
+          )}
         </div>
       )}
 
@@ -412,6 +430,9 @@ export default function AdminTickets() {
                       </button>
                     )}{' '}
                     | {new Date(ticket.updated_at).toLocaleDateString()}
+                    {ticket.csat_rating ? (
+                      <CsatStars rating={ticket.csat_rating} className="ml-2 text-warning-400" />
+                    ) : null}
                   </div>
                   {ticket.last_message && (
                     <div className="mt-1 truncate text-xs text-dark-600">
@@ -515,6 +536,22 @@ export default function AdminTickets() {
                     | {t('admin.tickets.created')}:{' '}
                     {new Date(selectedTicket.created_at).toLocaleString()}
                   </span>
+                  {selectedTicket.source && (
+                    <span className="rounded bg-dark-700 px-2 py-0.5 text-xs">
+                      {t(`admin.tickets.source.${selectedTicket.source}`)}
+                    </span>
+                  )}
+                  {selectedTicket.csat_rating ? (
+                    <span className="flex items-center gap-1" data-testid="ticket-csat">
+                      {t('admin.tickets.csatRating')}:{' '}
+                      <CsatStars rating={selectedTicket.csat_rating} className="text-warning-400" />
+                      <span className="text-dark-300">{selectedTicket.csat_rating}/5</span>
+                    </span>
+                  ) : selectedTicket.csat_requested ? (
+                    <span>
+                      {t('admin.tickets.csatRating')}: {t('admin.tickets.csatPending')}
+                    </span>
+                  ) : null}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {['open', 'pending', 'answered', 'closed'].map((s) => (

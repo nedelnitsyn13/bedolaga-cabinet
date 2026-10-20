@@ -56,6 +56,12 @@ export const ticketsApi = {
     return response.data;
   },
 
+  // Rate support for a closed ticket (once)
+  rateTicket: async (ticketId: number, rating: number): Promise<Ticket> => {
+    const response = await apiClient.post<Ticket>(`/cabinet/tickets/${ticketId}/csat`, { rating });
+    return response.data;
+  },
+
   // Add message to ticket with optional media
   addMessage: async (
     ticketId: number,

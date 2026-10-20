@@ -58,6 +58,12 @@ vi.mock('@/api/admin', () => ({
   },
 }));
 
+// Живые обновления требуют WebSocket-провайдера; здесь они не проверяются.
+vi.mock('@/hooks/useTicketLiveUpdates', () => ({
+  TICKET_POLL_INTERVAL_MS: false,
+  useTicketLiveUpdates: () => {},
+}));
+
 // jsdom не реализует matchMedia, а тема и фоны его спрашивают.
 if (!window.matchMedia) {
   window.matchMedia = ((query: string) => ({
@@ -109,5 +115,22 @@ describe('имя пользователя в карточке тикета', () 
 
     expect(await screen.findByText(/Unknown/)).toBeTruthy();
     expect(screen.queryByRole('link', { name: /Unknown/ })).toBeNull();
+  });
+});
+
+describe('оценка поддержки в карточке тикета', () => {
+  it('показывает оценку автора и откуда тикет', async () => {
+    getTicket.mockResolvedValue({
+      ...ticketDetail(ticketUser),
+      status: 'closed',
+      source: 'cabinet',
+      csat_rating: 4,
+      csat_requested: true,
+    });
+    await renderTicket();
+
+    const rating = await screen.findByTestId('ticket-csat');
+    expect(rating.textContent).toContain('4/5');
+    expect(screen.getByText('admin.tickets.source.cabinet')).toBeTruthy();
   });
 });
