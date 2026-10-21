@@ -22,6 +22,7 @@ import { resolveSupportContact } from '../utils/supportContact';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { TicketCsat } from '../components/tickets/TicketCsat';
 import { TICKET_POLL_INTERVAL_MS, useTicketLiveUpdates } from '../hooks/useTicketLiveUpdates';
+import { useChatAutoScroll } from '../hooks/useChatAutoScroll';
 
 const log = logger.createLogger('Support');
 
@@ -117,6 +118,7 @@ export default function Support() {
   });
 
   useTicketLiveUpdates('user');
+  const chatScroll = useChatAutoScroll(ticketDetail?.id, ticketDetail?.messages.length ?? 0);
 
   // Handle file selection (multi-upload)
   const handleFileSelect = async (
@@ -589,7 +591,11 @@ export default function Support() {
                   <Skeleton variant="card" count={3} className="h-16" />
                 </SkeletonGroup>
               ) : ticketDetail?.messages ? (
-                <div className="scrollbar-hide mb-6 max-h-96 flex-1 space-y-4 overflow-y-auto">
+                <div
+                  ref={chatScroll.containerRef}
+                  onScroll={chatScroll.onScroll}
+                  className="scrollbar-hide mb-6 max-h-96 flex-1 space-y-4 overflow-y-auto"
+                >
                   {ticketDetail.messages.map((msg) => (
                     <div
                       key={msg.id}
