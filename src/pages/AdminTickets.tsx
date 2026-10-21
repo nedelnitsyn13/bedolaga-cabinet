@@ -24,6 +24,7 @@ import {
 import { StatCard } from '@/components/stats';
 import { CsatStars } from '../components/tickets/TicketCsat';
 import { TICKET_POLL_INTERVAL_MS, useTicketLiveUpdates } from '../hooks/useTicketLiveUpdates';
+import { useChatAutoScroll } from '../hooks/useChatAutoScroll';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 
 interface MediaAttachment {
@@ -127,6 +128,8 @@ export default function AdminTickets() {
   });
 
   useTicketLiveUpdates('admin');
+
+  const chatScroll = useChatAutoScroll(selectedTicket?.id, selectedTicket?.messages.length ?? 0);
 
   const statusMutation = useMutation({
     mutationFn: ({ ticketId, status }: { ticketId: number; status: string }) =>
@@ -574,7 +577,11 @@ export default function AdminTickets() {
               </div>
 
               {/* Messages */}
-              <div className="scrollbar-hide mb-4 max-h-[400px] flex-1 space-y-4 overflow-y-auto">
+              <div
+                ref={chatScroll.containerRef}
+                onScroll={chatScroll.onScroll}
+                className="scrollbar-hide mb-4 max-h-[400px] flex-1 space-y-4 overflow-y-auto"
+              >
                 {selectedTicket.messages.map((msg) => (
                   <div
                     key={msg.id}
