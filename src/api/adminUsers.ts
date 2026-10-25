@@ -379,6 +379,7 @@ export interface UpdateSubscriptionRequest {
     | 'sync_limited_companion'
     | 'add_limited_squad_traffic'
     | 'remove_limited_squad_traffic'
+    | 'reset_limited_squad_traffic'
     | 'remove_traffic'
     | 'set_device_limit'
     | 'shorten';

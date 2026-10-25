@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { subscriptionApi } from '../../../api/subscription';
@@ -49,6 +50,19 @@ export function LimitedTrafficTopupSheet({
     queryKey: ['limited-traffic-packages', subscriptionId],
     queryFn: () => subscriptionApi.getLimitedTrafficPackages(subscriptionId),
     enabled: open && !!limitedTraffic?.available,
+  });
+
+  const [confirmReset, setConfirmReset] = useState(false);
+  const resetMutation = useMutation({
+    mutationFn: () => subscriptionApi.resetLimitedTraffic(subscriptionId),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['limited-traffic', subscriptionId], data.traffic);
+      queryClient.invalidateQueries({ queryKey: ['subscription', subscriptionId] });
+      queryClient.invalidateQueries({ queryKey: ['subscriptions-list'] });
+      queryClient.invalidateQueries({ queryKey: ['balance'] });
+      queryClient.invalidateQueries({ queryKey: ['purchase-options'] });
+      setConfirmReset(false);
+    },
   });
 
   const purchaseMutation = useMutation({
@@ -110,6 +124,59 @@ export function LimitedTrafficTopupSheet({
           ✕
         </button>
       </div>
+
+      {(limitedTraffic.reset_price_kopeks ?? 0) > 0 &&
+        (() => {
+          const price = limitedTraffic.reset_price_kopeks ?? 0;
+          const missingAmount = purchaseOptions ? price - purchaseOptions.balance_kopeks : 0;
+          return (
+            <div
+              className={`mb-4 rounded-xl border p-4 ${isDark ? 'border-dark-700/50 bg-dark-900/40' : 'border-champagne-300/60 bg-white/40'}`}
+            >
+              <div className="font-medium text-dark-100">
+                {t('subscription.additionalOptions.resetTrafficLimited')}
+              </div>
+              <div className="mb-3 mt-1 text-sm text-dark-400">
+                {t('subscription.additionalOptions.resetTrafficLimitedHint', {
+                  gb: limitedTraffic.base_limit_gb,
+                })}
+              </div>
+              {missingAmount > 0 ? (
+                <InsufficientBalancePrompt missingAmountKopeks={missingAmount} compact />
+              ) : (
+                <button
+                  onClick={() => (confirmReset ? resetMutation.mutate() : setConfirmReset(true))}
+                  disabled={resetMutation.isPending}
+                  className={`w-full py-3 ${confirmReset ? 'btn-primary' : 'btn-secondary'}`}
+                >
+                  {resetMutation.isPending ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    </span>
+                  ) : confirmReset ? (
+                    t('subscription.additionalOptions.resetTrafficLimitedConfirm', {
+                      price: formatPrice(price),
+                    })
+                  ) : (
+                    t('subscription.additionalOptions.resetTrafficLimitedButton', {
+                      price: formatPrice(price),
+                    })
+                  )}
+                </button>
+              )}
+              {resetMutation.isSuccess && (
+                <div className="mt-2 text-center text-sm text-success-400">
+                  {t('subscription.additionalOptions.resetTrafficLimitedDone')}
+                </div>
+              )}
+              {resetMutation.isError && (
+                <div className="mt-2 text-center text-sm text-error-400">
+                  {getErrorMessage(resetMutation.error)}
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
       {!trafficPackages || trafficPackages.length === 0 ? (
         <div className="py-4 text-center text-sm text-dark-400">

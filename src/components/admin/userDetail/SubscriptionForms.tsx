@@ -192,11 +192,13 @@ export function LimitedSquadTrafficForm({
   busy,
   onAdd,
   onRemove,
+  onReset,
   onClose,
 }: {
   busy: boolean;
   onAdd: (gb: number) => Promise<boolean>;
   onRemove: (gb: number) => Promise<boolean>;
+  onReset: () => Promise<boolean>;
   onClose: () => void;
 }) {
   const { t } = useTranslation();
@@ -239,6 +241,16 @@ export function LimitedSquadTrafficForm({
         className="btn-danger"
       >
         {t(`${ns}.removeLimitedTraffic`)}
+      </button>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={async () => {
+          if (await onReset()) onClose();
+        }}
+        className="btn-secondary"
+      >
+        {t(`${ns}.resetLimitedTraffic`)}
       </button>
       <button type="button" onClick={onClose} className="btn-secondary">
         {t('common.cancel')}

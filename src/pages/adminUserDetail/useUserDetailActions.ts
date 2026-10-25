@@ -109,6 +109,15 @@ export function useUserDetailActions(userId: number, data: UserDetailData) {
           }),
         { success: t('admin.users.detail.subscription.limitedTrafficRemoved'), after: refreshCard },
       ),
+    resetLimitedSquadTraffic: () =>
+      run(
+        () =>
+          adminUsersApi.updateSubscription(userId, {
+            action: 'reset_limited_squad_traffic',
+            ...withSubscription,
+          }),
+        { success: t('admin.users.detail.subscription.limitedTrafficReset'), after: refreshCard },
+      ),
     setDeviceLimit: (limit: number) =>
       run(
         () =>

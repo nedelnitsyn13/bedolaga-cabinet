@@ -121,6 +121,10 @@ export interface LimitedCompanionTraffic {
   purchased_gb: number;
   total_limit_gb: number;
   used_percent: number;
+  /** ISO-дата следующего ежемесячного сброса (1-е число). */
+  next_reset_at?: string | null;
+  /** Цена «обновить трафик сейчас»; 0 — кнопки нет. */
+  reset_price_kopeks?: number;
 }
 
 // Response wrapper for subscription status endpoint
