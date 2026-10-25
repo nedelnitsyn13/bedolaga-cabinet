@@ -248,6 +248,9 @@ export default function HomeSubscriptionPanel({
               isUnlimited={false}
               compact
             />
+            <div className="mt-2 text-[11px] text-dark-400">
+              {t('subscription.limitedResetMonthly')}
+            </div>
           </div>
         ) : !isUnlimited ? (
           <div

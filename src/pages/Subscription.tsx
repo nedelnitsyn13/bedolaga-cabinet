@@ -773,7 +773,7 @@ export default function Subscription() {
                     </div>
                   </div>
                   <div className="mb-2 text-[10px] text-dark-400">
-                    {t('subscription.trafficReset.MONTH_ROLLING')}
+                    {t('subscription.limitedResetMonthly')}
                   </div>
                   <TrafficProgressBar
                     usedGb={limitedTraffic.used_gb}

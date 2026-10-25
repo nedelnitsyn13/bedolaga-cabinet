@@ -45,6 +45,7 @@ export interface SubscriptionCardActions {
   removeTraffic: (purchaseId: number) => Promise<boolean>;
   addLimitedSquadTraffic: (gb: number) => Promise<boolean>;
   removeLimitedSquadTraffic: (gb: number) => Promise<boolean>;
+  resetLimitedSquadTraffic: () => Promise<boolean>;
   setDeviceLimit: (limit: number) => Promise<boolean>;
   cancelSbp: () => Promise<boolean>;
 }
@@ -352,6 +353,7 @@ export function SubscriptionCard({
               busy={busy}
               onAdd={actions.addLimitedSquadTraffic}
               onRemove={actions.removeLimitedSquadTraffic}
+              onReset={actions.resetLimitedSquadTraffic}
               onClose={() => onOpenPanel(null)}
             />
           )}

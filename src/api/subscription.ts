@@ -219,6 +219,22 @@ export const subscriptionApi = {
     return response.data;
   },
 
+  resetLimitedTraffic: async (
+    subscriptionId?: number,
+  ): Promise<{
+    success: boolean;
+    amount_paid_kopeks: number;
+    new_balance_kopeks: number;
+    traffic: LimitedCompanionTraffic;
+  }> => {
+    const response = await apiClient.post(
+      '/cabinet/subscription/limited-traffic/reset',
+      {},
+      withSubId(subscriptionId),
+    );
+    return response.data;
+  },
+
   saveLimitedTrafficCart: async (trafficGb: number, subscriptionId?: number): Promise<void> => {
     await apiClient.post(
       '/cabinet/subscription/limited-traffic/save-cart',
