@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { subscriptionApi } from '../../../api/subscription';
 import { getErrorMessage } from '../../../utils/subscriptionHelpers';
 import InsufficientBalancePrompt from '../../InsufficientBalancePrompt';
-import { ChevronRightIcon } from '../../icons';
+import { ChevronRightIcon, RefreshIcon } from '../../icons';
 import type { LimitedCompanionTraffic, PurchaseOptions } from '../../../types';
 
 // ──────────────────────────────────────────────────────────────────
@@ -128,52 +128,91 @@ export function LimitedTrafficTopupSheet({
       {(limitedTraffic.reset_price_kopeks ?? 0) > 0 &&
         (() => {
           const price = limitedTraffic.reset_price_kopeks ?? 0;
+          const basePrice = limitedTraffic.reset_base_price_kopeks ?? 0;
+          const discount = limitedTraffic.reset_discount_percent ?? 0;
           const missingAmount = purchaseOptions ? price - purchaseOptions.balance_kopeks : 0;
           return (
-            <div
-              className={`mb-4 rounded-xl border p-4 ${isDark ? 'border-dark-700/50 bg-dark-900/40' : 'border-champagne-300/60 bg-white/40'}`}
-            >
-              <div className="font-medium text-dark-100">
-                {t('subscription.additionalOptions.resetTrafficLimited')}
-              </div>
-              <div className="mb-3 mt-1 text-sm text-dark-400">
-                {t('subscription.additionalOptions.resetTrafficLimitedHint', {
-                  gb: limitedTraffic.base_limit_gb,
-                })}
-              </div>
-              {missingAmount > 0 ? (
-                <InsufficientBalancePrompt missingAmountKopeks={missingAmount} compact />
-              ) : (
-                <button
-                  onClick={() => (confirmReset ? resetMutation.mutate() : setConfirmReset(true))}
-                  disabled={resetMutation.isPending}
-                  className={`w-full py-3 ${confirmReset ? 'btn-primary' : 'btn-secondary'}`}
-                >
-                  {resetMutation.isPending ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            <div className="mb-4 rounded-xl border border-accent-500/50 bg-accent-500/10 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-start gap-3">
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-500/20 text-accent-400">
+                    <RefreshIcon className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-dark-100">
+                      {t('subscription.additionalOptions.resetTrafficLimited')}
+                    </div>
+                    <div className="mt-0.5 text-sm text-dark-400">
+                      {t('subscription.additionalOptions.resetTrafficLimitedHint', {
+                        gb: limitedTraffic.base_limit_gb,
+                      })}
+                    </div>
+                  </div>
+                </div>
+                <div className="shrink-0 text-right">
+                  {discount > 0 && (
+                    <span className="mb-1 inline-block rounded-full bg-success-500/20 px-2 py-0.5 text-xs font-medium text-success-400">
+                      -{discount}%
                     </span>
-                  ) : confirmReset ? (
-                    t('subscription.additionalOptions.resetTrafficLimitedConfirm', {
-                      price: formatPrice(price),
-                    })
-                  ) : (
-                    t('subscription.additionalOptions.resetTrafficLimitedButton', {
-                      price: formatPrice(price),
-                    })
                   )}
-                </button>
-              )}
-              {resetMutation.isSuccess && (
-                <div className="mt-2 text-center text-sm text-success-400">
-                  {t('subscription.additionalOptions.resetTrafficLimitedDone')}
+                  <div className="whitespace-nowrap font-medium text-accent-400">
+                    {discount > 0 && basePrice > price && (
+                      <span className="mr-1 text-sm text-dark-500 line-through">
+                        {formatPrice(basePrice)}
+                      </span>
+                    )}
+                    <span className="text-lg font-semibold">{formatPrice(price)}</span>
+                  </div>
                 </div>
-              )}
-              {resetMutation.isError && (
-                <div className="mt-2 text-center text-sm text-error-400">
-                  {getErrorMessage(resetMutation.error)}
-                </div>
-              )}
+              </div>
+
+              <div className="mt-4">
+                {missingAmount > 0 ? (
+                  <InsufficientBalancePrompt missingAmountKopeks={missingAmount} compact />
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() =>
+                        confirmReset ? resetMutation.mutate() : setConfirmReset(true)
+                      }
+                      disabled={resetMutation.isPending}
+                      className="btn-primary flex-1 py-3"
+                    >
+                      {resetMutation.isPending ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        </span>
+                      ) : confirmReset ? (
+                        t('subscription.additionalOptions.resetTrafficLimitedConfirm', {
+                          price: formatPrice(price),
+                        })
+                      ) : (
+                        t('subscription.additionalOptions.resetTrafficLimitedButton', {
+                          price: formatPrice(price),
+                        })
+                      )}
+                    </button>
+                    {confirmReset && !resetMutation.isPending && (
+                      <button
+                        onClick={() => setConfirmReset(false)}
+                        className="btn-secondary px-4 py-3"
+                      >
+                        {t('common.cancel')}
+                      </button>
+                    )}
+                  </div>
+                )}
+                {resetMutation.isSuccess && (
+                  <div className="mt-2 text-center text-sm text-success-400">
+                    {t('subscription.additionalOptions.resetTrafficLimitedDone')}
+                  </div>
+                )}
+                {resetMutation.isError && (
+                  <div className="mt-2 text-center text-sm text-error-400">
+                    {getErrorMessage(resetMutation.error)}
+                  </div>
+                )}
+              </div>
             </div>
           );
         })()}

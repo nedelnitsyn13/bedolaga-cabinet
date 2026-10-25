@@ -86,6 +86,31 @@ describe('обновить трафик', () => {
     await waitFor(() => expect(api.resetLimitedTraffic).toHaveBeenCalledWith(42));
   });
 
+  it('со скидкой показывает бейдж и зачёркнутую цену, как у пакетов', () => {
+    open(
+      traffic({
+        reset_price_kopeks: 36000,
+        reset_base_price_kopeks: 45000,
+        reset_discount_percent: 20,
+      }),
+      50000,
+    );
+
+    expect(screen.getByText('-20%')).toBeTruthy();
+    expect(screen.getByText(/450/).className).toContain('line-through');
+    expect(screen.getByRole('button', { name: /360/ })).toBeTruthy();
+  });
+
+  it('подтверждение можно отменить', () => {
+    open(traffic());
+
+    fireEvent.click(screen.getByRole('button', { name: /150/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Отмена' }));
+
+    expect(screen.queryByRole('button', { name: 'Отмена' })).toBeNull();
+    expect(api.resetLimitedTraffic).not.toHaveBeenCalled();
+  });
+
   it('без денег предлагает пополнить на недостающую сумму', () => {
     open(traffic(), 5000);
 

@@ -125,6 +125,9 @@ export interface LimitedCompanionTraffic {
   next_reset_at?: string | null;
   /** Цена «обновить трафик сейчас»; 0 — кнопки нет. */
   reset_price_kopeks?: number;
+  /** Цена без скидки и процент скидки — для зачёркнутой цены и бейджа. */
+  reset_base_price_kopeks?: number;
+  reset_discount_percent?: number;
 }
 
 // Response wrapper for subscription status endpoint
