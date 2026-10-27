@@ -175,6 +175,9 @@ export function DevicesPanel({ subscription, subscriptionId }: DevicesPanelProps
                     <div className="mt-0.5 truncate text-[11px] text-dark-400">
                       {deviceUpdatedLabel(device, t)}
                     </div>
+                    <div className="mt-0.5 min-w-0 select-all break-all font-mono text-[11px] text-dark-400">
+                      {device.hwid}
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-shrink-0 items-center gap-1">

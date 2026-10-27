@@ -454,11 +454,12 @@ export const subscriptionApi = {
    */
   purchaseWithSbpRecurring: async (
     tariffId: number,
+    subscriptionId?: number,
   ): Promise<{ status: string; redirect_url: string | null; subscription_id: number }> => {
     const response = await apiClient.post(
       '/cabinet/subscription/platega-recurrent/purchase',
       {},
-      { params: { tariff_id: tariffId } },
+      withSubId(subscriptionId, { tariff_id: tariffId }),
     );
     return response.data;
   },
@@ -497,11 +498,12 @@ export const subscriptionApi = {
    */
   purchaseWithLavaRecurring: async (
     tariffId: number,
+    subscriptionId?: number,
   ): Promise<{ status: string; redirect_url: string | null; subscription_id: number }> => {
     const response = await apiClient.post(
       '/cabinet/subscription/lava-recurrent/purchase',
       {},
-      { params: { tariff_id: tariffId } },
+      withSubId(subscriptionId, { tariff_id: tariffId }),
     );
     return response.data;
   },
@@ -537,11 +539,12 @@ export const subscriptionApi = {
   /** Оформление подписки на тариф привязкой Cashera: клиент подтверждает автосписания по ссылке. */
   purchaseWithCasheraRecurring: async (
     tariffId: number,
+    subscriptionId?: number,
   ): Promise<{ status: string; redirect_url: string | null; subscription_id: number }> => {
     const response = await apiClient.post(
       '/cabinet/subscription/cashera-recurrent/purchase',
       {},
-      { params: { tariff_id: tariffId } },
+      withSubId(subscriptionId, { tariff_id: tariffId }),
     );
     return response.data;
   },
@@ -609,6 +612,7 @@ export const subscriptionApi = {
      * this is a fresh purchase from the catalog.
      */
     subscriptionId?: number,
+    checkoutId?: string,
   ): Promise<{
     success: boolean;
     message: string;
@@ -623,6 +627,7 @@ export const subscriptionApi = {
       period_days: periodDays,
       traffic_gb: trafficGb,
       subscription_id: subscriptionId,
+      checkout_id: checkoutId,
       yandex_cid: getYandexCid() || undefined,
     });
     return response.data;
@@ -780,7 +785,13 @@ export const subscriptionApi = {
 
   // ── Revoke (reissue) ────────────────────────────────────────────────
 
-  revokeSubscription: async (subscriptionId?: number) => {
+  revokeSubscription: async (
+    subscriptionId?: number,
+  ): Promise<{
+    success: boolean;
+    devices_reset?: boolean;
+    cooldown_seconds: number;
+  }> => {
     const response = await apiClient.post(
       '/cabinet/subscription/revoke',
       undefined,
