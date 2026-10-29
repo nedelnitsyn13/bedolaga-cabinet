@@ -18,6 +18,7 @@ import TrialOfferCard from '../components/dashboard/TrialOfferCard';
 import ReminderCards from '../components/dashboard/ReminderCards';
 import { giftApi } from '../api/gift';
 import { promoApi } from '../api/promo';
+import AbuseNoticeCard from '../components/dashboard/AbuseNoticeCard';
 import PendingGiftCard from '../components/dashboard/PendingGiftCard';
 import SubscriptionListCard from '../components/subscription/SubscriptionListCard';
 import { DeviceLimitSheet } from '../components/subscription/DeviceLimitSheet';
@@ -332,6 +333,10 @@ export default function Dashboard() {
           <ChevronRightIcon className="h-4 w-4 text-dark-500" />
         </Link>
       </div>
+
+      {/* Предупреждение выше подарков и предложений: человек должен увидеть его
+          раньше, чем всё остальное, иначе объяснение теряется в ленте. */}
+      <AbuseNoticeCard />
 
       {/* Pending Gift Activations */}
       {pendingGifts && pendingGifts.length > 0 && <PendingGiftCard gifts={pendingGifts} />}
