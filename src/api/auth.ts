@@ -1,4 +1,5 @@
 import apiClient from './client';
+import { toMediaProxyUrl } from './mediaProxy';
 import { getYandexCid } from '../utils/yandexCid';
 import type {
   AuthResponse,
@@ -207,21 +208,7 @@ export const authApi = {
   getMyAvatar: async (): Promise<UserAvatarResponse> => {
     const response = await apiClient.get<UserAvatarResponse>('/cabinet/auth/me/avatar');
     const photoUrl = response.data.photo_url;
-    if (!photoUrl) return response.data;
-    try {
-      const parsed = new URL(photoUrl, 'https://cabinet.example');
-      const mediaPath = parsed.pathname.match(/(?:^|\/)cabinet\/media\/[^/]+$/)?.[0];
-      if (mediaPath) {
-        return {
-          photo_url: apiClient.getUri({
-            url: `${mediaPath.startsWith('/') ? '' : '/'}${mediaPath}${parsed.search}`,
-          }),
-        };
-      }
-    } catch {
-      // An invalid image URL is handled by the avatar hook's fallback.
-    }
-    return response.data;
+    return { photo_url: photoUrl ? toMediaProxyUrl(photoUrl) : null };
   },
 
   requestEmailChange: async (

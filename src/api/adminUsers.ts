@@ -1,4 +1,5 @@
 import apiClient from './client';
+import { toMediaProxyUrl } from './mediaProxy';
 
 export interface TrafficPurchaseInfo {
   id: number;
@@ -514,6 +515,17 @@ export const adminUsersApi = {
   getUsers: async (params: UsersListParams = {}): Promise<UsersListResponse> => {
     const response = await apiClient.get('/cabinet/admin/users', { params });
     return response.data;
+  },
+
+  // Фото профиля Telegram для порции списка: id → ссылка; у кого фото нет — ключа нет.
+  getAvatars: async (userIds: number[]): Promise<Record<number, string>> => {
+    const response = await apiClient.post<{ avatars: Record<string, string> }>(
+      '/cabinet/admin/users/avatars',
+      { user_ids: userIds },
+    );
+    return Object.fromEntries(
+      Object.entries(response.data.avatars).map(([id, url]) => [Number(id), toMediaProxyUrl(url)]),
+    );
   },
 
   // Get users stats

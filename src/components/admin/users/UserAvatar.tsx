@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface UserAvatarProps {
   firstName: string | null | undefined;
   username: string | null | undefined;
+  /** Фото профиля Telegram; нет или не загрузилось — кружок с буквой. */
+  photoUrl?: string | null;
   /** Заблокированные и удалённые — серые, чтобы не спорить с чипом статуса. */
   muted?: boolean;
   size?: 'sm' | 'md' | 'lg';
@@ -23,16 +26,23 @@ const DOT = {
   lg: 'h-3.5 w-3.5 bottom-0.5 right-0.5',
 } as const;
 
-/** Кружок с первой буквой имени: текст на заливке — токен `text-on-accent`, не белый. */
+/**
+ * Фото профиля, а без него — кружок с первой буквой имени: текст на заливке —
+ * токен `text-on-accent`, не белый. Фото лежит поверх буквы, так что пока оно
+ * грузится, видна буква, а не пустое место.
+ */
 export function UserAvatar({
   firstName,
   username,
+  photoUrl,
   muted,
   size = 'md',
   online = false,
   className,
 }: UserAvatarProps) {
   const initial = (firstName?.trim()[0] || username?.trim()[0] || '?').toUpperCase();
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  const photo = photoUrl && photoUrl !== failedUrl ? photoUrl : null;
   return (
     <div
       aria-hidden="true"
@@ -46,6 +56,20 @@ export function UserAvatar({
       )}
     >
       {initial}
+      {photo && (
+        <img
+          src={photo}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailedUrl(photo)}
+          // Заблокированных и удалённых обесцвечиваем и на фото — как серый кружок без него.
+          className={cn(
+            'absolute inset-0 h-full w-full rounded-full object-cover',
+            muted && 'grayscale',
+          )}
+        />
+      )}
       {online && (
         // Обводка цветом фона страницы отделяет точку от кружка на любой теме.
         <span

@@ -8,6 +8,7 @@ export * from './UsersTable';
 export * from './UsersToolbar';
 export * from './useInfiniteScroll';
 export * from './useMoney';
+export * from './useUserPhotos';
 export * from './AppliedFilters';
 export * from './FiltersPopover';
 export * from './SortMenu';
