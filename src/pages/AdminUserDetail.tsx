@@ -249,7 +249,11 @@ export default function AdminUserDetail() {
         aria-label={t('admin.users.title')}
         className="scrollbar-hide -mx-4 flex gap-1.5 overflow-x-auto px-4 py-1 sm:gap-2"
       >
-        {TABS.map((tab) => (
+        {/* «Нарушения» — только при подключённом антифроде: без него вкладке
+            нечего показать. Прямая ссылка на неё всё равно откроется. */}
+        {TABS.filter(
+          (tab) => tab !== 'abuse' || abuse.data?.available || activeTab === 'abuse',
+        ).map((tab) => (
           <button
             key={tab}
             type="button"
@@ -267,6 +271,18 @@ export default function AdminUserDetail() {
             {tab === 'referrals' && user.referral.referrals_count > 0 && (
               <span className="ml-1.5 rounded-full bg-dark-700 px-1.5 text-[11px] tabular-nums text-dark-200">
                 {user.referral.referrals_count}
+              </span>
+            )}
+            {tab === 'abuse' && (abuse.data?.violations_count ?? 0) > 0 && (
+              <span
+                className={cn(
+                  'ml-1.5 rounded-full px-1.5 text-[11px] tabular-nums',
+                  abuse.data?.level === 'limited'
+                    ? 'bg-error-500/15 text-error-400'
+                    : 'bg-warning-500/15 text-warning-400',
+                )}
+              >
+                {abuse.data?.violations_count}
               </span>
             )}
           </button>

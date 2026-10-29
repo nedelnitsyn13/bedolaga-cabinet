@@ -334,11 +334,11 @@ export default function Dashboard() {
         </Link>
       </div>
 
-      {/* Pending Gift Activations */}
       {/* Предупреждение выше подарков и предложений: человек должен увидеть его
           раньше, чем всё остальное, иначе объяснение теряется в ленте. */}
       <AbuseNoticeCard />
 
+      {/* Pending Gift Activations */}
       {pendingGifts && pendingGifts.length > 0 && <PendingGiftCard gifts={pendingGifts} />}
 
       {/* Multi-tariff: show subscription cards (max 3) — только когда подписки

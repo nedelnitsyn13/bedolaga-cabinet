@@ -40,6 +40,19 @@ vi.mock('@/components/admin/dpichecker/useDpiStatus', () => ({
   useDpiAvailable: () => false,
 }));
 
+const { userOverview } = vi.hoisted(() => ({ userOverview: vi.fn() }));
+vi.mock('@/api/abuse', () => ({ abuseApi: { userOverview, myStatus: vi.fn() } }));
+
+const abuseOff = {
+  available: false,
+  level: null,
+  violations_count: 0,
+  max_score: null,
+  last_detected_at: null,
+  whitelisted: false,
+  violations: [],
+};
+
 const detail: UserDetailResponse = {
   id: 42,
   telegram_id: 453205530,
@@ -184,6 +197,8 @@ vi.mock('@/api/promocodes', () => ({
 }));
 
 beforeEach(() => {
+  userOverview.mockReset();
+  userOverview.mockResolvedValue(abuseOff);
   getUser.mockReset();
   getUser.mockResolvedValue(detail);
   fullDeleteUser.mockReset();
@@ -255,15 +270,28 @@ describe('AdminUserDetail', () => {
     ).toBeTruthy();
   });
 
-  it('вкладок шесть, «Синхронизации» и «Информации» среди них нет', async () => {
+  it('вкладок пять, «Синхронизации» и «Информации» среди них нет', async () => {
     await renderDetail();
     const tabs = screen.getAllByRole('tab').map((tab) => tab.textContent ?? '');
-    // Шестая — нарушения; сторож остаётся на том же месте: разделы, которые
-    // когда-то отсюда выкинули, не должны вернуться.
-    expect(tabs.filter((label) => label.startsWith('admin.users.detail.tabs.'))).toHaveLength(6);
+    // Сторож: разделы, которые когда-то отсюда выкинули, не должны вернуться.
+    expect(tabs.filter((label) => label.startsWith('admin.users.detail.tabs.'))).toHaveLength(5);
     expect(tabs.some((label) => label.includes('tabs.sync') || label.includes('tabs.info'))).toBe(
       false,
     );
+  });
+
+  it('при подключённом антифроде шестая вкладка — нарушения, со счётчиком', async () => {
+    userOverview.mockResolvedValue({
+      ...abuseOff,
+      available: true,
+      level: 'warned',
+      violations_count: 2,
+    });
+    await renderDetail();
+    const tab = await screen.findByRole('tab', { name: /admin\.users\.detail\.tabs\.abuse/ });
+    expect(tab.textContent).toContain('2');
+    expect(screen.getAllByRole('tab')).toHaveLength(6);
+    expect(screen.getByText('admin.users.detail.abuse.level.warned')).toBeTruthy();
   });
 
   it('опасные действия только в меню и требуют подтверждения', async () => {
