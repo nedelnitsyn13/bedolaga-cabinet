@@ -15,6 +15,7 @@ import {
   UsersTable,
   UsersToolbar,
   useInfiniteScroll,
+  useUserPhotos,
 } from '@/components/admin/users';
 import { ArrowRightIcon, RefreshIcon, UsersIcon } from '@/components/icons';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
@@ -110,6 +111,11 @@ export default function AdminUsers() {
     [usersQuery.data],
   );
   const pages = usersQuery.data?.pages ?? [];
+  const photoGroups = useMemo(
+    () => (usersQuery.data?.pages ?? []).map((page) => page.users.map((user) => user.id)),
+    [usersQuery.data],
+  );
+  const photos = useUserPhotos(photoGroups);
   const total = pages.length > 0 ? pages[pages.length - 1].total : 0;
 
   const statsQuery = useQuery({
@@ -273,8 +279,8 @@ export default function AdminUsers() {
         </div>
       ) : (
         <>
-          <UsersTable users={users} className="hidden md:block" />
-          <UserCards users={users} className="md:hidden" />
+          <UsersTable users={users} photos={photos} className="hidden md:block" />
+          <UserCards users={users} photos={photos} className="md:hidden" />
         </>
       )}
 

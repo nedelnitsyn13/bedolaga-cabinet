@@ -15,6 +15,8 @@ import { useMoney } from './useMoney';
 
 interface UsersTableProps {
   users: UserListItem[];
+  /** Фото Telegram по id пользователя (`useUserPhotos`); у кого нет — буква. */
+  photos?: Record<number, string>;
   className?: string;
 }
 
@@ -42,7 +44,7 @@ export function subscriptionCaption(
 }
 
 /** Таблица для широких экранов; на телефоне вместо неё `UserCards`. */
-export function UsersTable({ users, className }: UsersTableProps) {
+export function UsersTable({ users, photos, className }: UsersTableProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const money = useMoney();
@@ -79,6 +81,7 @@ export function UsersTable({ users, className }: UsersTableProps) {
               <UserAvatar
                 firstName={user.first_name}
                 username={user.username}
+                photoUrl={photos?.[user.id]}
                 muted={isMutedUser(user)}
                 online={isUserOnline(user, now)}
               />

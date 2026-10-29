@@ -14,11 +14,13 @@ import { useMoney } from './useMoney';
 
 interface UserCardsProps {
   users: UserListItem[];
+  /** Фото Telegram по id пользователя (`useUserPhotos`); у кого нет — буква. */
+  photos?: Record<number, string>;
   className?: string;
 }
 
 /** Карточки для телефона: то же, что колонки таблицы. Чип статуса — единственное цветное пятно. */
-export function UserCards({ users, className }: UserCardsProps) {
+export function UserCards({ users, photos, className }: UserCardsProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const money = useMoney();
@@ -39,6 +41,7 @@ export function UserCards({ users, className }: UserCardsProps) {
               <UserAvatar
                 firstName={user.first_name}
                 username={user.username}
+                photoUrl={photos?.[user.id]}
                 muted={isMutedUser(user)}
                 online={isUserOnline(user, now)}
               />

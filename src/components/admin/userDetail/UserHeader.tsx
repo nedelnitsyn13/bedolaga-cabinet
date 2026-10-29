@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { UserDetailResponse, UserPanelInfo } from '@/api/adminUsers';
 import { AdminBackButton } from '@/components/admin/AdminBackButton';
-import { AccountStatusChip, UserAvatar } from '@/components/admin/users';
+import { AccountStatusChip, UserAvatar, useUserPhotos } from '@/components/admin/users';
 import { CopyIcon, TelegramSmallIcon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useNotify } from '@/platform/hooks/useNotify';
@@ -31,6 +31,7 @@ export function UserHeader({ user, panelInfo, actions, menu }: UserHeaderProps) 
   // Как зелёная точка в самой панели: отметка подключения не старше минуты.
   const online = isConnectedNow(panelInfo?.online_at);
   const muted = user.status === 'blocked' || user.status === 'deleted';
+  const photos = useUserPhotos(useMemo(() => [[user.id]], [user.id]));
 
   const copy = async (value: string) => {
     try {
@@ -49,6 +50,7 @@ export function UserHeader({ user, panelInfo, actions, menu }: UserHeaderProps) 
         <UserAvatar
           firstName={user.first_name}
           username={user.username}
+          photoUrl={photos[user.id]}
           muted={muted}
           size="lg"
           className="hidden sm:flex"
