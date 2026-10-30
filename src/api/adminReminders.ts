@@ -21,6 +21,8 @@ export interface ReminderConditions {
   } | null;
   registered_days_min?: number | null;
   inactive_days_min?: number | null;
+  /** Живая подписка ни разу не подключалась к VPN — бот проверяет по панели. */
+  never_connected?: boolean | null;
 }
 
 export interface ReminderText {
