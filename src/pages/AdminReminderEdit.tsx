@@ -53,6 +53,7 @@ export default function AdminReminderEdit() {
   const [tariffId, setTariffId] = useState('');
   const [registeredDays, setRegisteredDays] = useState('');
   const [inactiveDays, setInactiveDays] = useState('');
+  const [neverConnected, setNeverConnected] = useState(false);
   const [repeatEvery, setRepeatEvery] = useState('7');
   const [maxSends, setMaxSends] = useState('1');
   const [lang, setLang] = useState<(typeof LANGS)[number]>('ru');
@@ -92,6 +93,7 @@ export default function AdminReminderEdit() {
     setInactiveDays(
       r.conditions.inactive_days_min != null ? String(r.conditions.inactive_days_min) : '',
     );
+    setNeverConnected(Boolean(r.conditions.never_connected));
     setRepeatEvery(String(r.repeat_every_days));
     setMaxSends(String(r.max_sends));
     setTexts(r.texts);
@@ -111,8 +113,9 @@ export default function AdminReminderEdit() {
     if (reg !== null) result.registered_days_min = reg;
     const inactive = toInt(inactiveDays);
     if (inactive !== null) result.inactive_days_min = inactive;
+    if (neverConnected) result.never_connected = true;
     return result;
-  }, [auth, segment, segmentDays, tariffId, registeredDays, inactiveDays]);
+  }, [auth, segment, segmentDays, tariffId, registeredDays, inactiveDays, neverConnected]);
 
   // Тариф выбран, но ID не введён (или невалиден) — условие ещё не готово:
   // ни счётчик аудитории, ни сохранение не должны уходить в бэкенд с tariff_id: null.
@@ -360,6 +363,20 @@ export default function AdminReminderEdit() {
             value={inactiveDays}
             onChange={(e) => setInactiveDays(e.target.value)}
           />
+        </label>
+        <label className="flex items-start gap-3 text-sm text-dark-300">
+          <input
+            type="checkbox"
+            className="mt-0.5 h-4 w-4 shrink-0 accent-accent-500"
+            checked={neverConnected}
+            onChange={(e) => setNeverConnected(e.target.checked)}
+          />
+          <span>
+            {t('admin.reminders.form.neverConnected')}
+            <span className="mt-0.5 block text-xs text-dark-500">
+              {t('admin.reminders.form.neverConnectedHint')}
+            </span>
+          </span>
         </label>
         <p className="text-sm text-dark-300">
           {t('admin.reminders.form.audience')}:{' '}

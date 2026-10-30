@@ -3119,6 +3119,8 @@
         "tariffRequired": "Specify the tariff ID",
         "registeredDays": "No earlier than N days after registration",
         "inactiveDays": "Inactive for N days",
+        "neverConnected": "Has never connected to the VPN",
+        "neverConnectedHint": "Checked against the Remnawave panel. If the panel does not respond, this reminder skips sending rather than messaging people who did connect.",
         "audience": "Currently match",
         "repeatEvery": "Repeat in bot every N days",
         "maxSends": "Max sends in bot",

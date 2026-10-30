@@ -126,6 +126,32 @@ describe('AdminReminderEdit', () => {
     });
   });
 
+  it('«ни разу не подключался» уходит в условия и подгружается из сохранённого', async () => {
+    api.get.mockResolvedValue({
+      ...baseReminder,
+      conditions: { subscription: { segment: 'trial' }, never_connected: true },
+    });
+    api.audience.mockResolvedValue({ bot: 4, cabinet: 4 });
+    api.update.mockResolvedValue(baseReminder);
+    renderAt('/admin/reminders/5/edit');
+    await screen.findByDisplayValue('Существующее');
+
+    const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
+    expect(checkbox.checked).toBe(true);
+    await waitFor(() =>
+      expect(api.audience).toHaveBeenCalledWith({
+        conditions: { subscription: { segment: 'trial' }, never_connected: true },
+        channels: 'both',
+        category: 'service',
+      }),
+    );
+
+    fireEvent.click(checkbox);
+    fireEvent.click(screen.getByText('admin.reminders.form.save'));
+    await waitFor(() => expect(api.update).toHaveBeenCalled());
+    expect(api.update.mock.calls[0][1].conditions).toEqual({ subscription: { segment: 'trial' } });
+  });
+
   it('после сохранения сбрасывает кэш списка — новое видно сразу', async () => {
     api.get.mockResolvedValue(baseReminder);
     api.audience.mockResolvedValue({ bot: 0, cabinet: 0 });

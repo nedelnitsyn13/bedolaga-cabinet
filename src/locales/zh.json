@@ -2219,6 +2219,8 @@
         "tariffRequired": "请填写套餐ID",
         "registeredDays": "注册后至少N天",
         "inactiveDays": "不活跃N天",
+        "neverConnected": "从未连接过 VPN",
+        "neverConnectedHint": "根据 Remnawave 面板检查。如果面板没有响应，此提醒会跳过发送，而不会给已连接的用户发消息。",
         "audience": "当前符合条件",
         "repeatEvery": "机器人内每N天重复一次",
         "maxSends": "机器人内最大发送次数",
