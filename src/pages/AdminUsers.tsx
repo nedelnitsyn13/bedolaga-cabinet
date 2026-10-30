@@ -10,6 +10,7 @@ import { tariffsApi } from '@/api/tariffs';
 import { AdminBackButton } from '@/components/admin/AdminBackButton';
 import { ListRowSkeleton } from '@/components/admin/ListRowSkeleton';
 import {
+  RemindAllButton,
   type ToolbarOptions,
   UserCards,
   UsersTable,
@@ -21,6 +22,7 @@ import { ArrowRightIcon, RefreshIcon, UsersIcon } from '@/components/icons';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { useHeaderHeight } from '@/hooks/useHeaderHeight';
 import { cn } from '@/lib/utils';
+import { usePermissionStore } from '@/store/permissions';
 import { safeLocal } from '@/utils/safeStorage';
 import {
   type UsersListState,
@@ -71,6 +73,7 @@ export default function AdminUsers() {
   const { t, i18n } = useTranslation();
   const [params, setParams] = useSearchParams();
   const state = useMemo(() => parseUsersListState(params), [params]);
+  const canRemind = usePermissionStore((s) => s.hasPermission('users:send_message'));
 
   // Чистый вход в раздел продолжает последнюю выборку; адрес с параметрами — главнее.
   const restored = useRef(false);
@@ -229,24 +232,30 @@ export default function AdminUsers() {
         <UsersToolbar state={state} onChange={update} options={options} />
       </div>
 
-      <p className="mb-3 text-sm tabular-nums text-dark-400">
-        {usersQuery.isLoading
-          ? t('common.loading')
-          : t('admin.users.shown', {
-              shown: number(users.length, locale),
-              total: number(total, locale),
-            })}
-      </p>
+      <div className="mb-3 flex min-h-9 items-center justify-between gap-3">
+        <p className="text-sm tabular-nums text-dark-400">
+          {usersQuery.isLoading
+            ? t('common.loading')
+            : t('admin.users.shown', {
+                shown: number(users.length, locale),
+                total: number(total, locale),
+              })}
+        </p>
+        {/* Выборка «Триал без подключения» — ровно те, кому напоминание и адресовано. */}
+        {state.view === 'notconnected' && canRemind && total > 0 && <RemindAllButton />}
+      </div>
 
       {usersQuery.isLoading ? (
         <ListRowSkeleton count={6} actions={[]} />
       ) : usersQuery.isError ? (
         <div className="rounded-2xl border border-error-500/30 bg-error-500/10 p-6 text-center">
           <p className="mb-3 text-error-400">
-            {state.view === 'online' &&
-            isAxiosError(usersQuery.error) &&
-            usersQuery.error.response?.status === 503
-              ? t('admin.users.onlineUnavailable')
+            {isAxiosError(usersQuery.error) && usersQuery.error.response?.status === 503
+              ? state.view === 'online'
+                ? t('admin.users.onlineUnavailable')
+                : state.view === 'notconnected'
+                  ? t('admin.users.connectReminder.panelUnavailable')
+                  : t('admin.users.loadError')
               : t('admin.users.loadError')}
           </p>
           <button type="button" onClick={() => usersQuery.refetch()} className="btn-secondary">

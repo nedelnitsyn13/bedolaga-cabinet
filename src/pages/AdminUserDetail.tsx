@@ -8,11 +8,13 @@ import {
   pickActivityView,
 } from '@/components/admin/userDetail/ActivityHub';
 import { BalanceTab } from '@/components/admin/userDetail/BalanceTab';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { abuseApi } from '@/api/abuse';
+import { adminUsersApi } from '@/api/adminUsers';
 import { AbuseTab } from '@/components/admin/userDetail/AbuseTab';
 import { OverviewTab, type DetailTab } from '@/components/admin/userDetail/OverviewTab';
 import { ReferralsTab } from '@/components/admin/userDetail/ReferralsTab';
+import { ConnectReminderDialog } from '@/components/admin/userDetail/ConnectReminderDialog';
 import { SendMessageDialog } from '@/components/admin/userDetail/SendMessageDialog';
 import { SubscriptionTab } from '@/components/admin/userDetail/SubscriptionTab';
 import { UserActionsMenu } from '@/components/admin/userDetail/UserActionsMenu';
@@ -22,7 +24,7 @@ import { buildReachabilityLink } from '@/components/admin/reachability/deepLink'
 import { useReachabilityAvailable } from '@/components/admin/reachability/useReachabilityStatus';
 import { buildLink as buildDpiLink } from '@/components/admin/dpichecker/deepLink';
 import { useDpiAvailable } from '@/components/admin/dpichecker/useDpiStatus';
-import { EmailIcon, TelegramSmallIcon } from '@/components/icons';
+import { BellIcon, EmailIcon, TelegramSmallIcon } from '@/components/icons';
 import { PageSkeleton, Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { usePermissionStore } from '@/store/permissions';
@@ -58,6 +60,8 @@ export default function AdminUserDetail() {
   const [params, setParams] = useSearchParams();
   const hasPermission = usePermissionStore((s) => s.hasPermission);
   const [sendMessageOpen, setSendMessageOpen] = useState(false);
+  const [reminderOpen, setReminderOpen] = useState(false);
+  const queryClient = useQueryClient();
   const tabsRef = useRef<HTMLDivElement>(null);
 
   const parsedId = id ? Number.parseInt(id, 10) : Number.NaN;
@@ -72,6 +76,16 @@ export default function AdminUserDetail() {
     queryKey: ['admin-user-abuse', userId],
     queryFn: () => abuseApi.userOverview(userId as number),
     enabled: userId != null,
+    staleTime: 60_000,
+    retry: false,
+  });
+  // Триал без подключения: кнопка «Напомнить подключиться» в шапке. Подходит ли
+  // человек, решает бот по панели; без права писать запрос не нужен.
+  const canRemind = hasPermission('users:send_message');
+  const reminder = useQuery({
+    queryKey: ['admin-user-remind-connect', userId],
+    queryFn: () => adminUsersApi.getConnectReminder(userId as number),
+    enabled: userId != null && canRemind,
     staleTime: 60_000,
     retry: false,
   });
@@ -206,8 +220,21 @@ export default function AdminUserDetail() {
       <span className="hidden sm:inline">{t('admin.users.detail.header.write')}</span>
     </button>
   );
+  const reminderAction = reminder.data?.eligible && (
+    <button
+      type="button"
+      onClick={() => setReminderOpen(true)}
+      aria-label={t('admin.users.connectReminder.button')}
+      title={t('admin.users.connectReminder.button')}
+      className="btn-secondary h-11 w-11 shrink-0 p-0 sm:h-10 sm:w-auto sm:px-4"
+    >
+      <BellIcon className="h-4 w-4" />
+      <span className="hidden sm:inline">{t('admin.users.connectReminder.buttonShort')}</span>
+    </button>
+  );
   const headerActions = (
     <>
+      {reminderAction}
       {messageAction}
       {emailAction}
     </>
@@ -366,6 +393,17 @@ export default function AdminUserDetail() {
         open={sendMessageOpen}
         onClose={() => setSendMessageOpen(false)}
       />
+      {reminder.data?.eligible && (
+        <ConnectReminderDialog
+          userId={userId}
+          info={reminder.data}
+          open={reminderOpen}
+          onClose={() => setReminderOpen(false)}
+          onSent={() =>
+            queryClient.invalidateQueries({ queryKey: ['admin-user-remind-connect', userId] })
+          }
+        />
+      )}
     </div>
   );
 }
