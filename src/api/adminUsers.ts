@@ -497,6 +497,8 @@ export interface UsersListParams {
   purchase_count?: number;
   /** Только с открытым временным доступом (сегмент «в грейсе»). */
   in_grace?: boolean;
+  /** Живой триал, ни разу не подключавшийся (по панели; сегмент «триал без подключения»). */
+  never_connected?: boolean;
   sort_by?:
     | 'created_at'
     | 'balance'
@@ -508,6 +510,21 @@ export interface UsersListParams {
     | 'grace_until';
   /** Не задано — привычное направление ключа (истечение и грейс с ближайших, остальное с больших). */
   sort_order?: 'asc' | 'desc';
+}
+
+/** Карточка: можно ли напомнить подключиться и готовый текст. */
+export interface ConnectReminderInfo {
+  eligible: boolean;
+  reason: 'no_telegram' | 'not_eligible' | 'panel_unavailable' | null;
+  text: string;
+  last_sent_at: string | null;
+  cooldown_hours: number;
+}
+
+export interface ConnectReminderAudience {
+  count: number;
+  skipped_recent: number;
+  cooldown_hours: number;
 }
 
 export const adminUsersApi = {
@@ -624,6 +641,36 @@ export const adminUsersApi = {
   },
 
   // Send direct Telegram message to user via bot (parity with bot's admin action)
+  // Напоминание «подключитесь» триальщику, который ни разу не подключался.
+  getConnectReminder: async (userId: number): Promise<ConnectReminderInfo> => {
+    const response = await apiClient.get<ConnectReminderInfo>(
+      `/cabinet/admin/users/${userId}/remind-connect`,
+    );
+    return response.data;
+  },
+
+  sendConnectReminder: async (
+    userId: number,
+    text: string,
+  ): Promise<{ result: 'sent' | 'forbidden' | 'failed' }> => {
+    const response = await apiClient.post(`/cabinet/admin/users/${userId}/remind-connect`, {
+      text,
+    });
+    return response.data;
+  },
+
+  getConnectReminderAudience: async (): Promise<ConnectReminderAudience> => {
+    const response = await apiClient.get<ConnectReminderAudience>(
+      '/cabinet/admin/users/remind-connect/audience',
+    );
+    return response.data;
+  },
+
+  sendConnectReminderBulk: async (): Promise<{ queued: number }> => {
+    const response = await apiClient.post('/cabinet/admin/users/remind-connect/bulk');
+    return response.data;
+  },
+
   sendMessage: async (
     userId: number,
     text: string,

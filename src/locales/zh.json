@@ -4305,6 +4305,24 @@
           "bad_request": "Telegram 拒绝了该消息。请检查文本（HTML 标记）后重试"
         }
       },
+      "connectReminder": {
+        "button": "提醒连接",
+        "buttonShort": "提醒",
+        "title": "提醒连接",
+        "hint": "该用户已领取试用，但从未连接。机器人会在消息中附上“连接”按钮。",
+        "lastSent": "已于{{when}}提醒过。要再次发送吗？",
+        "send": "发送",
+        "sending": "发送中…",
+        "sent": "提醒已发送",
+        "forbidden": "用户已屏蔽机器人——提醒未送达",
+        "failed": "Telegram 拒绝了该消息。请检查文本（HTML 标记）后重试",
+        "bulkButton": "提醒所有人",
+        "bulkConfirm": "向 {{count}} 位用户发送提醒？将跳过过去 {{hours}} 小时内已提醒的用户：{{skipped}}。",
+        "bulkConfirmTitle": "提醒连接",
+        "bulkNobody": "无需提醒：此列表中的所有人在过去 {{hours}} 小时内都已收到消息。",
+        "bulkStarted": "已开始发送：{{count}}。消息将在后台发送",
+        "panelUnavailable": "面板未响应——无法确定谁从未连接。请稍后重试"
+      },
       "userActions": {
         "delete": "删除用户",
         "disable": "禁用",
@@ -4373,6 +4391,7 @@
         "grace": "临时访问中",
         "traffic": "流量将尽",
         "nopay": "未购买",
+        "notconnected": "试用未连接",
         "online": "在线",
         "blocked": "已封禁"
       },

@@ -21,7 +21,15 @@ export type SortKey =
   | 'purchases';
 /** Направление сортировки; пусто — привычное для ключа (см. NATURAL_DIRECTION). */
 export type SortDirection = 'asc' | 'desc';
-export type ViewKey = 'all' | 'expiring' | 'grace' | 'traffic' | 'nopay' | 'online' | 'blocked';
+export type ViewKey =
+  | 'all'
+  | 'expiring'
+  | 'grace'
+  | 'traffic'
+  | 'nopay'
+  | 'notconnected'
+  | 'online'
+  | 'blocked';
 
 export interface UsersListState {
   /** Строка поиска как её ввели — разбирается в `classifySearch`. */
@@ -77,6 +85,7 @@ export const VIEW_KEYS: readonly ViewKey[] = [
   'grace',
   'traffic',
   'nopay',
+  'notconnected',
   'online',
   'blocked',
 ];
@@ -152,6 +161,8 @@ const VIEW_PRESETS: Record<ViewKey, Partial<Omit<UsersListState, 'q' | 'view'>>>
   grace: { sort: 'grace' },
   traffic: { sort: 'traffic' },
   nopay: { sort: 'purchases' },
+  // Взяли триал и ни разу не подключились — им напоминают из этой выборки.
+  notconnected: { sub: 'trial' },
   online: { sort: 'activity' },
   blocked: { status: 'blocked' },
 };
@@ -237,6 +248,8 @@ export function buildUsersQuery(state: UsersListState): UsersQuery {
   if (state.view === 'online') query.online = true;
   if (state.view === 'grace') query.in_grace = true;
   if (state.view === 'nopay') query.purchase_count = 0;
+  // «Не подключались» знает только панель — бот спрашивает её, как и для «онлайн».
+  if (state.view === 'notconnected') query.never_connected = true;
   if (state.view === 'traffic') query.traffic_used_percent_min = TRAFFIC_LOW_PERCENT;
   return query;
 }

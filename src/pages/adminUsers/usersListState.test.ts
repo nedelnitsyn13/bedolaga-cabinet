@@ -136,6 +136,14 @@ describe('buildUsersQuery', () => {
       purchase_count: 0,
     });
   });
+  it('«триал без подключения» — триалы, о подключении спрашиваем панель', () => {
+    const state = applyView(DEFAULT_STATE, 'notconnected');
+    expect(buildUsersQuery(state)).toMatchObject({
+      subscription_status: 'trial',
+      never_connected: true,
+    });
+    expect(buildUsersQuery(DEFAULT_STATE).never_connected).toBeUndefined();
+  });
   it('«трафик на исходе» — от 80 % лимита, а не только исчерпанные', () => {
     const query = buildUsersQuery(applyView(DEFAULT_STATE, 'traffic'));
     expect(query.traffic_used_percent_min).toBe(80);

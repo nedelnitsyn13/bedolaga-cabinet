@@ -1,5 +1,6 @@
 export * from './online';
 export * from './RelativeTime';
+export * from './RemindAllButton';
 export * from './TrafficBar';
 export * from './UserAvatar';
 export * from './UserCards';

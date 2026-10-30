@@ -4783,6 +4783,24 @@
           "bad_request": "Telegram rejected the message. Check the text (HTML markup) and try again"
         }
       },
+      "connectReminder": {
+        "button": "Remind to connect",
+        "buttonShort": "Remind",
+        "title": "Remind to connect",
+        "hint": "This user took a trial but has never connected. The bot will attach a “Connect” button to the message.",
+        "lastSent": "Already reminded {{when}}. Send again?",
+        "send": "Send",
+        "sending": "Sending…",
+        "sent": "Reminder sent",
+        "forbidden": "The user has blocked the bot — reminder not delivered",
+        "failed": "Telegram rejected the message. Check the text (HTML markup) and try again",
+        "bulkButton": "Remind everyone",
+        "bulkConfirm": "Send the reminder to {{count}} users? Skipping those reminded in the last {{hours}} h: {{skipped}}.",
+        "bulkConfirmTitle": "Remind to connect",
+        "bulkNobody": "Nobody to remind: everyone in this view was messaged in the last {{hours}} h.",
+        "bulkStarted": "Sending started: {{count}}. Messages go out in the background",
+        "panelUnavailable": "The panel did not respond — could not find who never connected. Try again later"
+      },
       "userActions": {
         "delete": "Delete user",
         "resetTrial": "Reset trial",
@@ -5525,6 +5543,7 @@
         "grace": "In grace",
         "traffic": "Traffic running out",
         "nopay": "No purchases",
+        "notconnected": "Trial, not connected",
         "online": "Online",
         "blocked": "Blocked"
       },
