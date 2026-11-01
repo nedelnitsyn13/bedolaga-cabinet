@@ -707,6 +707,8 @@ export interface Ticket {
 export interface TicketDetail extends Omit<Ticket, 'messages_count' | 'last_message'> {
   is_reply_blocked: boolean;
   messages: TicketMessage[];
+  /** Ждёт ответа поддержки — когда примерно ответят (по статистике и часам работы). */
+  expected_reply_at?: string | null;
 }
 
 // Гейт согласия с офертой/политикой на экране первой авторизации.
@@ -897,6 +899,9 @@ export interface TicketSettings {
   sla_minutes: number;
   sla_check_interval_seconds: number;
   sla_reminder_cooldown_minutes: number;
+  support_hours_enabled?: boolean;
+  support_hours_start?: number;
+  support_hours_end?: number;
   support_system_mode: string;
   cabinet_user_notifications_enabled: boolean;
   cabinet_admin_notifications_enabled: boolean;
