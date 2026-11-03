@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlatformProvider } from '@/platform/PlatformProvider';
 
 /**
@@ -64,6 +64,13 @@ beforeEach(() => {
   api.createCombined.mockResolvedValue({ id: 900 });
 });
 afterEach(cleanup);
+
+// Страница тяжёлая: холодный импорт в CI занимает секунды и съедал 5-секундный
+// лимит первого теста. Грузим модуль заранее, со своим лимитом, — сами тесты
+// после этого меряют только рендер и проверки.
+beforeAll(async () => {
+  await import('./AdminBroadcastCreate');
+}, 30_000);
 
 async function renderPage(entry: string | { pathname: string; search: string; state: unknown }) {
   const AdminBroadcastCreate = (await import('./AdminBroadcastCreate')).default;
