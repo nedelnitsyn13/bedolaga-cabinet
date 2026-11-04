@@ -83,7 +83,9 @@ async function submitCode() {
   );
 
   fireEvent.click(await screen.findByRole('button', { name: 'profile.accounts.link' }));
-  fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'returning@example.com' } });
+  fireEvent.change(screen.getByLabelText('auth.email'), {
+    target: { value: 'returning@example.com' },
+  });
   fireEvent.change(screen.getByLabelText('auth.password'), { target: { value: 'new-password' } });
   fireEvent.change(screen.getByLabelText('auth.confirmPassword'), {
     target: { value: 'new-password' },

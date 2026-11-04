@@ -1,3 +1,4 @@
+import { getLocalizedApiErrorMessage } from '../utils/api-error-display';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useQueries, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router';
@@ -28,7 +29,6 @@ import { useCurrency } from '../hooks/useCurrency';
 import { greetingKey } from '../utils/greeting';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { safeLocal } from '../utils/safeStorage';
-import { getApiErrorMessage } from '../utils/api-error';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -141,7 +141,7 @@ export default function Dashboard() {
       refreshUser();
     },
     onError: (error: unknown) => {
-      setTrialError(getApiErrorMessage(error, t('common.error')));
+      setTrialError(getLocalizedApiErrorMessage(error, t('common.error'), t));
     },
   });
 
@@ -151,6 +151,10 @@ export default function Dashboard() {
     traffic_used_gb: number;
     traffic_used_percent: number;
     is_unlimited: boolean;
+    traffic_accounting_mode?: 'legacy' | 'managed';
+    traffic_remaining_gb?: number | null;
+    base_traffic_remaining_gb?: number | null;
+    next_traffic_refresh_at?: string | null;
   } | null>(null);
 
   const refreshTrafficMutation = useMutation({
@@ -160,6 +164,10 @@ export default function Dashboard() {
         traffic_used_gb: data.traffic_used_gb,
         traffic_used_percent: data.traffic_used_percent,
         is_unlimited: data.is_unlimited,
+        traffic_accounting_mode: data.traffic_accounting_mode,
+        traffic_remaining_gb: data.traffic_remaining_gb,
+        base_traffic_remaining_gb: data.base_traffic_remaining_gb,
+        next_traffic_refresh_at: data.next_traffic_refresh_at,
       });
       safeLocal.setItem(
         `traffic_refresh_ts_${subscription?.id ?? 'default'}`,
