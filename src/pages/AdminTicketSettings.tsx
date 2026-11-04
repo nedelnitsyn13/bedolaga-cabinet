@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { hourLabel } from '@/utils/supportHours';
 import { adminApi } from '../api/admin';
 import { AdminBackButton } from '../components/admin';
 import { SettingsIcon } from '@/components/icons';
@@ -35,6 +36,9 @@ export default function AdminTicketSettings() {
     support_system_mode: string;
     cabinet_user_notifications_enabled: boolean;
     cabinet_admin_notifications_enabled: boolean;
+    support_hours_enabled: boolean;
+    support_hours_start: number;
+    support_hours_end: number;
   }>({
     sla_enabled: true,
     sla_minutes: 5,
@@ -43,6 +47,9 @@ export default function AdminTicketSettings() {
     support_system_mode: 'both',
     cabinet_user_notifications_enabled: true,
     cabinet_admin_notifications_enabled: true,
+    support_hours_enabled: false,
+    support_hours_start: 10,
+    support_hours_end: 22,
   });
 
   useEffect(() => {
@@ -55,6 +62,9 @@ export default function AdminTicketSettings() {
         support_system_mode: settings.support_system_mode,
         cabinet_user_notifications_enabled: settings.cabinet_user_notifications_enabled ?? true,
         cabinet_admin_notifications_enabled: settings.cabinet_admin_notifications_enabled ?? true,
+        support_hours_enabled: settings.support_hours_enabled ?? false,
+        support_hours_start: settings.support_hours_start ?? 10,
+        support_hours_end: settings.support_hours_end ?? 22,
       });
     }
   }, [settings]);
@@ -207,6 +217,76 @@ export default function AdminTicketSettings() {
               </div>
             </label>
           </div>
+        </div>
+
+        {/* Часы работы поддержки */}
+        <div className="card">
+          <h3 className="mb-4 text-lg font-semibold text-dark-100">
+            {t('admin.tickets.supportHours')}
+          </h3>
+          <label className="mb-4 flex cursor-pointer items-center gap-3">
+            <input
+              type="checkbox"
+              checked={formData.support_hours_enabled}
+              disabled={envLocked.has('support_hours_enabled')}
+              onChange={(e) =>
+                setFormData({ ...formData, support_hours_enabled: e.target.checked })
+              }
+              className="h-5 w-5 rounded border-dark-700 bg-dark-800 text-accent-500 focus:ring-2 focus:ring-accent-500 focus:ring-offset-0"
+            />
+            <div>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-medium text-dark-100">
+                {t('admin.tickets.supportHoursEnabled')}
+                {envLocked.has('support_hours_enabled') && <EnvLockedBadge />}
+              </div>
+              <div className="text-sm text-dark-500">
+                {t('admin.tickets.supportHoursEnabledDesc')}
+              </div>
+            </div>
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block text-sm font-medium text-dark-300">
+              <span className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                {t('admin.tickets.supportHoursStart')}
+                {envLocked.has('support_hours_start') && <EnvLockedBadge />}
+              </span>
+              <select
+                className="input"
+                value={formData.support_hours_start}
+                disabled={!formData.support_hours_enabled || envLocked.has('support_hours_start')}
+                onChange={(e) =>
+                  setFormData({ ...formData, support_hours_start: Number(e.target.value) })
+                }
+              >
+                {Array.from({ length: 24 }, (_, hour) => (
+                  <option key={hour} value={hour}>
+                    {hourLabel(hour)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block text-sm font-medium text-dark-300">
+              <span className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                {t('admin.tickets.supportHoursEnd')}
+                {envLocked.has('support_hours_end') && <EnvLockedBadge />}
+              </span>
+              <select
+                className="input"
+                value={formData.support_hours_end}
+                disabled={!formData.support_hours_enabled || envLocked.has('support_hours_end')}
+                onChange={(e) =>
+                  setFormData({ ...formData, support_hours_end: Number(e.target.value) })
+                }
+              >
+                {Array.from({ length: 24 }, (_, index) => index + 1).map((hour) => (
+                  <option key={hour} value={hour}>
+                    {hourLabel(hour)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <p className="mt-2 text-xs text-dark-500">{t('admin.tickets.supportHoursDesc')}</p>
         </div>
 
         {/* SLA Settings */}

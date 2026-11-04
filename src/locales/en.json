@@ -1464,6 +1464,17 @@
       "thanks": "Thanks for your rating!",
       "rate": "Rate {{rating}} of 5",
       "failed": "Could not save your rating, please try again"
+    },
+    "hours": {
+      "line": "Support hours: {{start}}–{{end}} ({{tz}})",
+      "closedNow": "We're offline right now — you can still open a ticket, we'll reply after {{start}}.",
+      "typical": "We usually reply in about {{eta}}",
+      "etaOpen": "We'll reply in about {{eta}}",
+      "etaClosed": "Support is offline right now. We'll reply after {{start}} ({{tz}}), usually within {{eta}}",
+      "etaSoon": "We'll reply very soon",
+      "minutes": "~{{count}} min",
+      "hoursShort": "~{{value}} h",
+      "msk": "MSK"
     }
   },
   "wheel": {
@@ -5069,6 +5080,12 @@
       "modeBoth": "Tickets and contact",
       "modeTickets": "Tickets only",
       "modeContact": "Contact only",
+      "supportHours": "Support hours",
+      "supportHoursEnabled": "Use support hours",
+      "supportHoursEnabledDesc": "Tickets can be opened any time. Outside hours customers see when to expect a reply, and SLA neither reminds at night nor counts off-hours.",
+      "supportHoursStart": "From",
+      "supportHoursEnd": "To",
+      "supportHoursDesc": "Times use the bot timezone (TIMEZONE). \"To\" earlier than \"From\" means an overnight shift. Expected reply time is calculated automatically from the last 30 days of replies.",
       "slaSettings": "SLA Settings",
       "slaEnabled": "Enable SLA (response time monitoring)",
       "slaEnabledDesc": "Automatic notifications for overdue tickets",
