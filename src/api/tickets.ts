@@ -6,6 +6,7 @@ import type {
   TicketMediaItem,
   PaginatedResponse,
 } from '../types';
+import type { SupportStatus } from '../utils/supportHours';
 
 // Media upload response type
 interface MediaUploadResponse {
@@ -47,6 +48,12 @@ export const ticketsApi = {
       message,
       ...media,
     });
+    return response.data;
+  },
+
+  // Часы работы поддержки и типичное время ответа.
+  getSupportStatus: async (): Promise<SupportStatus> => {
+    const response = await apiClient.get<SupportStatus>('/cabinet/tickets/support-status');
     return response.data;
   },
 

@@ -1416,6 +1416,17 @@
       "thanks": "感谢您的评价！",
       "rate": "评分 {{rating}} / 5",
       "failed": "评分保存失败，请重试"
+    },
+    "hours": {
+      "line": "客服工作时间：{{start}}–{{end}}（{{tz}}）",
+      "closedNow": "我们现在不在线——您仍可提交工单，我们将在 {{start}} 之后回复。",
+      "typical": "通常约 {{eta}} 内回复",
+      "etaOpen": "我们将在约 {{eta}} 内回复",
+      "etaClosed": "客服目前不在线。我们将在 {{start}}（{{tz}}）之后回复，通常在 {{eta}} 内",
+      "etaSoon": "我们很快就会回复",
+      "minutes": "约 {{count}} 分钟",
+      "hoursShort": "约 {{value}} 小时",
+      "msk": "MSK"
     }
   },
   "wheel": {
@@ -4112,6 +4123,12 @@
       "modeBoth": "工单和联系方式",
       "modeTickets": "仅工单",
       "modeContact": "仅联系方式",
+      "supportHours": "客服工作时间",
+      "supportHoursEnabled": "启用工作时间",
+      "supportHoursEnabledDesc": "工单随时可以提交。非工作时间客户会看到预计回复时间，SLA 夜间不提醒，也不计算非工作时间。",
+      "supportHoursStart": "从",
+      "supportHoursEnd": "到",
+      "supportHoursDesc": "时间按机器人时区（TIMEZONE）计算。“到”早于“从”表示跨夜班次。预计回复时间根据最近 30 天的回复自动计算。",
       "slaSettings": "SLA设置",
       "slaEnabled": "启用 SLA（响应时间监控）",
       "slaEnabledDesc": "自动通知过期工单",

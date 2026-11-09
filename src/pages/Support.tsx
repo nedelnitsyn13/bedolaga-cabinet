@@ -22,6 +22,11 @@ import { linkifyText } from '../utils/linkify';
 import { resolveSupportContact } from '../utils/supportContact';
 import { Skeleton, SkeletonGroup } from '@/components/ui/skeleton';
 import { TicketCsat } from '../components/tickets/TicketCsat';
+import {
+  ExpectedReply,
+  SupportHoursNotice,
+  TypicalReplyHint,
+} from '../components/tickets/SupportHours';
 import { TICKET_POLL_INTERVAL_MS, useTicketLiveUpdates } from '../hooks/useTicketLiveUpdates';
 import { useChatAutoScroll } from '../hooks/useChatAutoScroll';
 
@@ -113,6 +118,16 @@ export default function Support() {
   const { data: supportConfig, isLoading: configLoading } = useQuery({
     queryKey: ['support-config'],
     queryFn: infoApi.getSupportConfig,
+  });
+
+  // Часы работы и типичное время ответа: тикет оставить можно всегда, но человек
+  // видит, что ночью ответят утром. Сбой ручки — просто без подсказки.
+  const { data: supportStatus } = useQuery({
+    queryKey: ['support-status'],
+    queryFn: ticketsApi.getSupportStatus,
+    enabled: supportConfig?.tickets_enabled === true,
+    staleTime: 5 * 60_000,
+    retry: false,
   });
 
   const { data: tickets, isLoading } = useQuery({
@@ -382,6 +397,14 @@ export default function Support() {
         </Button>
       </motion.div>
 
+      {/* Часы работы — self-animated по той же причине, что карточка контакта ниже:
+          появляется после ответа запроса, когда stagger родителя уже отыграл. */}
+      {supportStatus?.hours_enabled && (
+        <motion.div variants={staggerItem} initial="initial" animate="animate">
+          <SupportHoursNotice status={supportStatus} />
+        </motion.div>
+      )}
+
       {/* Contact support card for "both" mode — self-animated: mounts after the
           config query resolves, when the parent stagger orchestration has already
           finished and would leave it stuck at opacity 0 */}
@@ -559,6 +582,8 @@ export default function Support() {
                   </div>
                 )}
 
+                {supportStatus && <TypicalReplyHint status={supportStatus} />}
+
                 <div className="flex gap-3">
                   <Button
                     type="submit"
@@ -598,6 +623,14 @@ export default function Support() {
                       {new Date(selectedTicket.created_at).toLocaleDateString(uiLocale())}
                     </span>
                   </div>
+                  {ticketDetail?.status === 'open' && ticketDetail.expected_reply_at && (
+                    <div className="mt-2">
+                      <ExpectedReply
+                        expectedAt={ticketDetail.expected_reply_at}
+                        status={supportStatus}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

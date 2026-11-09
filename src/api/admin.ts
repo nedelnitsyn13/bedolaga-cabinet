@@ -74,6 +74,10 @@ export interface TicketSettings {
   sla_minutes: number;
   sla_check_interval_seconds: number;
   sla_reminder_cooldown_minutes: number;
+  /** Часы работы поддержки (TIMEZONE бота): вне них клиенту пишут, когда ответят. */
+  support_hours_enabled?: boolean;
+  support_hours_start?: number;
+  support_hours_end?: number;
   support_system_mode: string; // tickets, contact, both
   cabinet_user_notifications_enabled: boolean;
   cabinet_admin_notifications_enabled: boolean;
@@ -86,6 +90,9 @@ export interface TicketSettingsUpdate {
   sla_minutes?: number;
   sla_check_interval_seconds?: number;
   sla_reminder_cooldown_minutes?: number;
+  support_hours_enabled?: boolean;
+  support_hours_start?: number;
+  support_hours_end?: number;
   support_system_mode?: string;
   cabinet_user_notifications_enabled?: boolean;
   cabinet_admin_notifications_enabled?: boolean;
