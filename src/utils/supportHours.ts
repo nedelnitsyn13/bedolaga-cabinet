@@ -25,10 +25,18 @@ export function roundEstimate(minutes: number): number {
   return Math.round(value / 60) * 60;
 }
 
-export function formatEta(minutes: number, t: Translate, locale: string): string {
-  if (minutes < 60) return t('support.hours.minutes', { count: minutes });
+/** «~25 мин» / «~1,5 ч»; ``plain`` — без «~», для «Среднее время ответа — 15 мин». */
+export function formatEta(
+  minutes: number,
+  t: Translate,
+  locale: string,
+  { plain = false }: { plain?: boolean } = {},
+): string {
+  if (minutes < 60) {
+    return t(plain ? 'support.hours.minutesPlain' : 'support.hours.minutes', { count: minutes });
+  }
   const value = (minutes / 60).toLocaleString(locale, { maximumFractionDigits: 1 });
-  return t('support.hours.hoursShort', { value });
+  return t(plain ? 'support.hours.hoursPlain' : 'support.hours.hoursShort', { value });
 }
 
 export function hourLabel(hour: number): string {

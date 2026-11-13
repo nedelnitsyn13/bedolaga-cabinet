@@ -127,6 +127,8 @@ export default function Support() {
     queryFn: ticketsApi.getSupportStatus,
     enabled: supportConfig?.tickets_enabled === true,
     staleTime: 5 * 60_000,
+    // «На связи / не работает» меняется в 10:00 и 22:00 — открытая вкладка не должна застревать.
+    refetchInterval: 5 * 60_000,
     retry: false,
   });
 

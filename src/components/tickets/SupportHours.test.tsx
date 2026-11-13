@@ -25,15 +25,22 @@ const closed: SupportStatus = { ...open, open_now: false, opens_at: '2026-11-03T
 afterEach(cleanup);
 
 describe('SupportHours', () => {
-  it('днём — только часы работы', () => {
+  it('днём — «на связи» и режим работы', () => {
     render(<SupportHoursNotice status={open} />);
-    expect(screen.getByText(/с 10:00 до 22:00 \(МСК\)/)).toBeTruthy();
-    expect(screen.queryByText(/не на связи/)).toBeNull();
+    expect(screen.getByText('Поддержка на связи')).toBeTruthy();
+    expect(screen.getByText(/ежедневно с 10:00 до 22:00 \(МСК\)/)).toBeTruthy();
+    expect(screen.queryByText(/не работает/)).toBeNull();
   });
 
-  it('ночью — ещё и «ответим после 10:00»', () => {
+  it('ночью — «не работает» и «ответим после 10:00»', () => {
     render(<SupportHoursNotice status={closed} />);
-    expect(screen.getByText(/не на связи.*после 10:00/)).toBeTruthy();
+    expect(screen.getByText('Сейчас поддержка не работает')).toBeTruthy();
+    expect(screen.getByText(/ответим после 10:00/)).toBeTruthy();
+  });
+
+  it('одинаковые часы начала и конца — круглосуточно', () => {
+    render(<SupportHoursNotice status={{ ...open, start_hour: 0, end_hour: 24 }} />);
+    expect(screen.getByText(/круглосуточно/)).toBeTruthy();
   });
 
   it('выключенные часы ничего не показывают', () => {
@@ -41,9 +48,9 @@ describe('SupportHours', () => {
     expect(container.textContent).toBe('');
   });
 
-  it('подсказка в форме: днём — типичное время, ночью — после открытия', () => {
+  it('подсказка в форме: днём — среднее время ответа, ночью — после открытия', () => {
     render(<TypicalReplyHint status={open} />);
-    expect(screen.getByText(/примерно через ~25 мин/)).toBeTruthy();
+    expect(screen.getByText(/Среднее время ответа — 25 мин$/)).toBeTruthy();
     cleanup();
     render(<TypicalReplyHint status={{ ...closed, reply_minutes: 90 }} />);
     expect(screen.getByText(/после 10:00 \(МСК\), обычно в течение ~1,5 ч/)).toBeTruthy();
