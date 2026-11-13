@@ -41,9 +41,9 @@ describe('SupportHours', () => {
     expect(container.textContent).toBe('');
   });
 
-  it('подсказка в форме: днём — типичное время, ночью — после открытия', () => {
+  it('подсказка в форме: днём — среднее время ответа, ночью — после открытия', () => {
     render(<TypicalReplyHint status={open} />);
-    expect(screen.getByText(/примерно через ~25 мин/)).toBeTruthy();
+    expect(screen.getByText(/Среднее время ответа — 25 мин$/)).toBeTruthy();
     cleanup();
     render(<TypicalReplyHint status={{ ...closed, reply_minutes: 90 }} />);
     expect(screen.getByText(/после 10:00 \(МСК\), обычно в течение ~1,5 ч/)).toBeTruthy();

@@ -1467,12 +1467,14 @@
     "hours": {
       "line": "Support hours: {{start}}–{{end}} ({{tz}})",
       "closedNow": "We're offline right now — you can still open a ticket, we'll reply after {{start}}.",
-      "typical": "We usually reply in about {{eta}}",
+      "typical": "Average response time: {{eta}}",
       "etaOpen": "We'll reply in about {{eta}}",
       "etaClosed": "Support is offline right now. We'll reply after {{start}} ({{tz}}), usually within {{eta}}",
       "etaSoon": "We'll reply very soon",
       "minutes": "~{{count}} min",
       "hoursShort": "~{{value}} h",
+      "minutesPlain": "{{count}} min",
+      "hoursPlain": "{{value}} h",
       "msk": "MSK"
     }
   },

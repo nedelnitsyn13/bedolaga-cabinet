@@ -59,7 +59,9 @@ export function TypicalReplyHint({ status }: { status: SupportStatus }) {
     <p className="text-xs text-dark-500">
       ⏱{' '}
       {status.open_now
-        ? t('support.hours.typical', { eta })
+        ? t('support.hours.typical', {
+            eta: formatEta(status.reply_minutes, t, locale, { plain: true }),
+          })
         : t('support.hours.etaClosed', {
             start: hourLabel(status.start_hour),
             tz: timezoneLabel(status.timezone, t, locale),

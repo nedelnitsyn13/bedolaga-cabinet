@@ -1419,12 +1419,14 @@
     "hours": {
       "line": "客服工作时间：{{start}}–{{end}}（{{tz}}）",
       "closedNow": "我们现在不在线——您仍可提交工单，我们将在 {{start}} 之后回复。",
-      "typical": "通常约 {{eta}} 内回复",
+      "typical": "平均回复时间：{{eta}}",
       "etaOpen": "我们将在约 {{eta}} 内回复",
       "etaClosed": "客服目前不在线。我们将在 {{start}}（{{tz}}）之后回复，通常在 {{eta}} 内",
       "etaSoon": "我们很快就会回复",
       "minutes": "约 {{count}} 分钟",
       "hoursShort": "约 {{value}} 小时",
+      "minutesPlain": "{{count}} 分钟",
+      "hoursPlain": "{{value}} 小时",
       "msk": "MSK"
     }
   },

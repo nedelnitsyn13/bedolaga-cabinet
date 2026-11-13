@@ -7,6 +7,8 @@ const t = (key: string, options?: Record<string, unknown>) =>
   ({
     'support.hours.minutes': `~${options?.count} мин`,
     'support.hours.hoursShort': `~${options?.value} ч`,
+    'support.hours.minutesPlain': `${options?.count} мин`,
+    'support.hours.hoursPlain': `${options?.value} ч`,
     'support.hours.msk': 'МСК',
   })[key] ?? key;
 
@@ -22,6 +24,8 @@ describe('supportHours', () => {
     expect(formatEta(25, t, 'ru-RU')).toBe('~25 мин');
     expect(formatEta(90, t, 'ru-RU')).toBe('~1,5 ч');
     expect(formatEta(120, t, 'ru-RU')).toBe('~2 ч');
+    expect(formatEta(15, t, 'ru-RU', { plain: true })).toBe('15 мин');
+    expect(formatEta(90, t, 'ru-RU', { plain: true })).toBe('1,5 ч');
   });
 
   it('часы и пояс бота, а не браузера', () => {
