@@ -1417,8 +1417,11 @@
       "failed": "评分保存失败，请重试"
     },
     "hours": {
-      "line": "客服工作时间：{{start}}–{{end}}（{{tz}}）",
-      "closedNow": "我们现在不在线——您仍可提交工单，我们将在 {{start}} 之后回复。",
+      "line": "工作时间：每天 {{start}} 至 {{end}}（{{tz}}）",
+      "allDay": "工作时间：全天 24 小时",
+      "onlineNow": "客服在线",
+      "offlineNow": "客服当前不在线",
+      "closedNow": "您仍可提交工单——我们将在 {{start}} 之后回复。",
       "typical": "平均回复时间：{{eta}}",
       "etaOpen": "我们将在约 {{eta}} 内回复",
       "etaClosed": "客服目前不在线。我们将在 {{start}}（{{tz}}）之后回复，通常在 {{eta}} 内",

@@ -1465,8 +1465,11 @@
       "failed": "Could not save your rating, please try again"
     },
     "hours": {
-      "line": "Support hours: {{start}}–{{end}} ({{tz}})",
-      "closedNow": "We're offline right now — you can still open a ticket, we'll reply after {{start}}.",
+      "line": "Working hours: daily from {{start}} to {{end}} ({{tz}})",
+      "allDay": "Working hours: 24/7",
+      "onlineNow": "Support is online",
+      "offlineNow": "Support is offline now",
+      "closedNow": "You can still create a ticket — we will reply after {{start}}.",
       "typical": "Average response time: {{eta}}",
       "etaOpen": "We'll reply in about {{eta}}",
       "etaClosed": "Support is offline right now. We'll reply after {{start}} ({{tz}}), usually within {{eta}}",
