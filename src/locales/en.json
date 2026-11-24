@@ -3234,6 +3234,8 @@
       "delete": "Delete",
       "confirmDelete": "Delete reminder \"{{name}}\"?",
       "stats": "Sent: {{sent}} · dismissed: {{dismissed}} · currently match: bot {{bot}}, cabinet {{cabinet}}",
+      "revenue": "💰 Earned {{amount}} · payments: {{payments}} · paying users: {{users}} (top-ups within {{days}} d after the message, last 90 days)",
+      "revenueNone": "💰 No payments within {{days}} d after the message yet",
       "any": "Any",
       "channels": {
         "both": "Bot and cabinet",
@@ -3277,6 +3279,9 @@
         "inactiveDays": "Inactive for N days",
         "neverConnected": "Has never connected to the VPN",
         "neverConnectedHint": "Checked against the Remnawave panel. If the panel does not respond, this reminder skips sending rather than messaging people who did connect.",
+        "abandonedPayment": "Abandoned payment",
+        "abandonedPaymentHint": "Created a payment and did not pay. Sends once per such invoice; a new unpaid invoice triggers it again. Skipped if the user later topped up another way.",
+        "abandonedHours": "Hours after the payment was created (1–72)",
         "audience": "Currently match",
         "repeatEvery": "Repeat in bot every N days",
         "maxSends": "Max sends in bot",

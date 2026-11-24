@@ -54,6 +54,8 @@ export default function AdminReminderEdit() {
   const [registeredDays, setRegisteredDays] = useState('');
   const [inactiveDays, setInactiveDays] = useState('');
   const [neverConnected, setNeverConnected] = useState(false);
+  const [abandoned, setAbandoned] = useState(false);
+  const [abandonedHours, setAbandonedHours] = useState('1');
   const [repeatEvery, setRepeatEvery] = useState('7');
   const [maxSends, setMaxSends] = useState('1');
   const [lang, setLang] = useState<(typeof LANGS)[number]>('ru');
@@ -94,6 +96,8 @@ export default function AdminReminderEdit() {
       r.conditions.inactive_days_min != null ? String(r.conditions.inactive_days_min) : '',
     );
     setNeverConnected(Boolean(r.conditions.never_connected));
+    setAbandoned(r.conditions.abandoned_payment_hours != null);
+    setAbandonedHours(String(r.conditions.abandoned_payment_hours ?? 1));
     setRepeatEvery(String(r.repeat_every_days));
     setMaxSends(String(r.max_sends));
     setTexts(r.texts);
@@ -114,8 +118,21 @@ export default function AdminReminderEdit() {
     const inactive = toInt(inactiveDays);
     if (inactive !== null) result.inactive_days_min = inactive;
     if (neverConnected) result.never_connected = true;
+    if (abandoned) {
+      result.abandoned_payment_hours = Math.min(72, Math.max(1, toInt(abandonedHours) ?? 1));
+    }
     return result;
-  }, [auth, segment, segmentDays, tariffId, registeredDays, inactiveDays, neverConnected]);
+  }, [
+    auth,
+    segment,
+    segmentDays,
+    tariffId,
+    registeredDays,
+    inactiveDays,
+    neverConnected,
+    abandoned,
+    abandonedHours,
+  ]);
 
   // Тариф выбран, но ID не введён (или невалиден) — условие ещё не готово:
   // ни счётчик аудитории, ни сохранение не должны уходить в бэкенд с tariff_id: null.
@@ -378,6 +395,34 @@ export default function AdminReminderEdit() {
             </span>
           </span>
         </label>
+        <label className="flex items-start gap-3 text-sm text-dark-300">
+          <input
+            type="checkbox"
+            className="mt-0.5 h-4 w-4 shrink-0 accent-accent-500"
+            checked={abandoned}
+            onChange={(e) => setAbandoned(e.target.checked)}
+          />
+          <span>
+            {t('admin.reminders.form.abandonedPayment')}
+            <span className="mt-0.5 block text-xs text-dark-500">
+              {t('admin.reminders.form.abandonedPaymentHint')}
+            </span>
+          </span>
+        </label>
+        {abandoned && (
+          <label className="block text-sm text-dark-300">
+            {t('admin.reminders.form.abandonedHours')}
+            <input
+              aria-label={t('admin.reminders.form.abandonedHours')}
+              type="number"
+              min={1}
+              max={72}
+              className={inputClass}
+              value={abandonedHours}
+              onChange={(e) => setAbandonedHours(e.target.value)}
+            />
+          </label>
+        )}
         <p className="text-sm text-dark-300">
           {t('admin.reminders.form.audience')}:{' '}
           {audience.data?.bot != null && <span>🤖 {audience.data.bot} </span>}
