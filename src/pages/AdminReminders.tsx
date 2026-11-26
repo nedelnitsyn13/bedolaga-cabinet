@@ -6,6 +6,7 @@ import { AdminBackButton } from '@/components/admin';
 import { PermissionGate } from '@/components/auth/PermissionGate';
 import { EditIcon, PlusIcon, TrashIcon } from '@/components/icons';
 import { useNativeDialog } from '@/platform/hooks/useNativeDialog';
+import { formatPrice } from '@/utils/format';
 
 export default function AdminReminders() {
   const { t } = useTranslation();
@@ -99,6 +100,19 @@ export default function AdminReminders() {
                     cabinet: r.stats.audience_cabinet ?? '—',
                   })}
                 </div>
+                {/* Выручку считаем по отправкам в бот: у карточки в кабинете нет «момента отправки». */}
+                {r.channels !== 'cabinet' && (
+                  <div className="mt-1 text-xs text-dark-300">
+                    {r.stats.payments
+                      ? t('admin.reminders.revenue', {
+                          amount: formatPrice(r.stats.revenue_kopeks ?? 0),
+                          payments: r.stats.payments,
+                          users: r.stats.paid_users ?? 0,
+                          days: r.stats.attribution_days ?? 3,
+                        })
+                      : t('admin.reminders.revenueNone', { days: r.stats.attribution_days ?? 3 })}
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <PermissionGate permission="user_reminders:edit">

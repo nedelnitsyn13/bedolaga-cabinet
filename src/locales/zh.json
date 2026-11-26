@@ -2395,6 +2395,8 @@
       "delete": "删除",
       "confirmDelete": "删除提醒「{{name}}」？",
       "stats": "已发送：{{sent}} · 已关闭：{{dismissed}} · 当前符合条件：机器人 {{bot}}，个人中心 {{cabinet}}",
+      "revenue": "💰 带来收入 {{amount}} · 付款次数：{{payments}} · 付款用户：{{users}}（消息发送后 {{days}} 天内的充值，近 90 天）",
+      "revenueNone": "💰 消息发送后 {{days}} 天内暂无付款",
       "any": "任意",
       "channels": {
         "both": "机器人和个人中心",
@@ -2438,6 +2440,9 @@
         "inactiveDays": "不活跃N天",
         "neverConnected": "从未连接过 VPN",
         "neverConnectedHint": "根据 Remnawave 面板检查。如果面板没有响应，此提醒会跳过发送，而不会给已连接的用户发消息。",
+        "abandonedPayment": "未完成的付款",
+        "abandonedPaymentHint": "创建了付款但未支付。每张此类账单只发送一次；新的未付账单会再次触发。若用户之后通过其他方式充值则不发送。",
+        "abandonedHours": "付款创建后多少小时（1–72）",
         "audience": "当前符合条件",
         "repeatEvery": "机器人内每N天重复一次",
         "maxSends": "机器人内最大发送次数",

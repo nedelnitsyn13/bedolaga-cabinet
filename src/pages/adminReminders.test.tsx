@@ -77,6 +77,49 @@ describe('AdminReminders — права доступа', () => {
   });
 });
 
+describe('AdminReminders — выручка', () => {
+  afterEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+  });
+
+  const row = (id: number, channels: string, stats: Record<string, unknown>) => ({
+    id,
+    name: `R${id}`,
+    channels,
+    category: 'service',
+    conditions: {},
+    repeat_every_days: 7,
+    max_sends: 1,
+    texts: {},
+    button_kind: 'none',
+    button_target: null,
+    is_active: true,
+    is_builtin: false,
+    created_at: null,
+    updated_at: null,
+    stats: { sent_total: 3, dismissed_total: 0, audience_bot: 1, audience_cabinet: null, ...stats },
+  });
+
+  it('показывает выручку бота, а у карточек кабинета — нет', async () => {
+    usePermissionStore.setState({
+      permissions: ['user_reminders:read'],
+      roleLevel: 0,
+      isLoaded: true,
+    });
+    api.list.mockResolvedValue([
+      row(1, 'bot', { revenue_kopeks: 150_000, payments: 2, paid_users: 2, attribution_days: 3 }),
+      row(2, 'both', { revenue_kopeks: 0, payments: 0 }),
+      row(3, 'cabinet', { revenue_kopeks: 0, payments: 0 }),
+    ]);
+    renderPage();
+    await screen.findByText('R1');
+
+    expect(screen.getAllByText(/admin\.reminders\.revenue$/)).toHaveLength(1);
+    expect(screen.getAllByText(/admin\.reminders\.revenueNone/)).toHaveLength(1);
+  });
+});
+
 describe('AdminReminders — ошибка загрузки', () => {
   afterEach(() => {
     cleanup();

@@ -136,7 +136,7 @@ describe('AdminReminderEdit', () => {
     renderAt('/admin/reminders/5/edit');
     await screen.findByDisplayValue('Существующее');
 
-    const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
+    const [checkbox] = screen.getAllByRole('checkbox') as HTMLInputElement[];
     expect(checkbox.checked).toBe(true);
     await waitFor(() =>
       expect(api.audience).toHaveBeenCalledWith({
@@ -150,6 +150,22 @@ describe('AdminReminderEdit', () => {
     fireEvent.click(screen.getByText('admin.reminders.form.save'));
     await waitFor(() => expect(api.update).toHaveBeenCalled());
     expect(api.update.mock.calls[0][1].conditions).toEqual({ subscription: { segment: 'trial' } });
+  });
+
+  it('«брошенная оплата»: часы уходят в условия и подгружаются из сохранённого', async () => {
+    api.get.mockResolvedValue({ ...baseReminder, conditions: { abandoned_payment_hours: 2 } });
+    api.audience.mockResolvedValue({ bot: 1, cabinet: 1 });
+    api.update.mockResolvedValue(baseReminder);
+    renderAt('/admin/reminders/5/edit');
+    await screen.findByDisplayValue('Существующее');
+
+    const hours = screen.getByLabelText('admin.reminders.form.abandonedHours') as HTMLInputElement;
+    expect(hours.value).toBe('2');
+    fireEvent.change(hours, { target: { value: '500' } });
+    fireEvent.click(screen.getByText('admin.reminders.form.save'));
+    await waitFor(() => expect(api.update).toHaveBeenCalled());
+    // Больше трёх суток бот не примет — форма сама ограничивает.
+    expect(api.update.mock.calls[0][1].conditions).toEqual({ abandoned_payment_hours: 72 });
   });
 
   it('после сохранения сбрасывает кэш списка — новое видно сразу', async () => {

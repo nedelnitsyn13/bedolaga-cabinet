@@ -23,6 +23,8 @@ export interface ReminderConditions {
   inactive_days_min?: number | null;
   /** Живая подписка ни разу не подключалась к VPN — бот проверяет по панели. */
   never_connected?: boolean | null;
+  /** Создал платёж и не оплатил за столько часов; пишет один раз на каждый такой счёт. */
+  abandoned_payment_hours?: number | null;
 }
 
 export interface ReminderText {
@@ -54,6 +56,11 @@ export interface ReminderResponse extends ReminderPayload {
     dismissed_total: number;
     audience_bot: number | null;
     audience_cabinet: number | null;
+    /** Выручка за 90 дней: пополнения в окне после отправки в бот. */
+    revenue_kopeks?: number;
+    paid_users?: number;
+    payments?: number;
+    attribution_days?: number;
   };
 }
 
