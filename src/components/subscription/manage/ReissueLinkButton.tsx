@@ -83,6 +83,7 @@ export function ReissueLinkButton({
       setFailedResetStorageKey(result.devices_reset === false ? targetStorageKey : null);
       queryClient.invalidateQueries({ queryKey: ['subscription'] });
       queryClient.invalidateQueries({ queryKey: ['connectionLink', targetSubscriptionId] });
+      queryClient.invalidateQueries({ queryKey: ['connection-link', targetSubscriptionId] });
       queryClient.invalidateQueries({ queryKey: ['appConfig', targetSubscriptionId] });
       queryClient.invalidateQueries({ queryKey: ['subscriptions-list'] });
       // Re-read the actual HWID state even when deletion only partially succeeded.

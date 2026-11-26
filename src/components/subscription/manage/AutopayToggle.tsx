@@ -46,6 +46,7 @@ export function useAutopayMutation(subscriptionId: number | undefined) {
       queryClient.invalidateQueries({ queryKey: ['sbp-recurring', subscriptionId] });
       // Главная держит одиночную подписку под ключом без id.
       queryClient.invalidateQueries({ queryKey: ['subscription'] });
+      queryClient.invalidateQueries({ queryKey: ['payhot-recurring', subscriptionId] });
     },
   });
 }
